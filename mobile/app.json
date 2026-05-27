@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "PrimeLink",
+    "slug": "primelink",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#040C18"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ng.primlink.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#040C18"
+      },
+      "package": "ng.primelink.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
