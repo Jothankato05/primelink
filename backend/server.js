@@ -56,7 +56,7 @@ app.use('/api/alerts',      alertsRouter);
 
 // ─── Socket.io connections ───────────────────────────────────────────────────
 io.on('connection', (socket) => {
-  console.log(`⚡ Client connected: ${socket.id}`);
+  console.log(`[socket] connected: ${socket.id}`);
 
   // Send welcome payload
   socket.emit('connected', {
@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log(`🔌 Client disconnected: ${socket.id}`);
+    console.log(`[socket] disconnected: ${socket.id}`);
   });
 });
 
@@ -83,10 +83,8 @@ startSimulator(io);
 
 server.listen(PORT, () => {
   console.log('');
-  console.log('╔══════════════════════════════════════════════╗');
-  console.log('║   🌍  PrimeLink API  —  LIVE                  ║');
-  console.log(`║   http://localhost:${PORT}                       ║`);
-  console.log('║   Socket.io  +  REST  +  IoT Simulator        ║');
-  console.log('╚══════════════════════════════════════════════╝');
+  console.log('PrimeLink API running');
+  console.log(`  http://localhost:${PORT}`);
+  console.log('  Socket.io + REST + IoT Sensor Simulator');
   console.log('');
 });

@@ -140,8 +140,8 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
   </style>
 </head>
 <body>
-  <h1>⬡ PrimeLink Community Risk Report</h1>
-  <h2>Generated: ${now} · By Primers Corporation</h2>
+  <h1>PrimeLink Community Risk Report</h1>
+  <h2>Generated: ${now} · Primers Corporation</h2>
 
   <div class="hero">
     <div>
@@ -200,85 +200,89 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
   };
 
   return (
-    <div className="max-w-screen-2xl mx-auto px-4 py-4 pb-32">
+    <div className="max-w-screen-2xl mx-auto px-3 sm:px-4 lg:px-6 py-4 pb-28">
 
-      {/* Community Health Index hero */}
-      <div className="card-glow mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1 flex-wrap">
-            <p className="text-xs text-[#64748B] font-medium uppercase tracking-wider">
-              {selectedCommunity.name} · {selectedCommunity.state}
-            </p>
-            {/* Backend connection badge */}
-            <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
-              connected
-                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                : 'bg-[#1A2E4A] text-[#64748B] border-[#1A2E4A]'
-            }`}>
-              {connected ? <Wifi size={9} /> : <WifiOff size={9} />}
-              {connected ? 'LIVE' : 'SIMULATED'}
-            </span>
-            <button
-              onClick={exportReport}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#0D1E35] border border-[#1A2E4A] hover:border-[#00C896]/40 text-[#64748B] hover:text-[#00C896] transition-all text-[10px] font-medium"
-            >
-              <Download size={10} />
-              Export Report
-            </button>
-          </div>
-          <div className="flex items-end gap-3">
-            <span className="text-5xl font-black text-white">{comp}</span>
-            <div className="mb-1">
-              <div className={compCls}>{compStatus}</div>
-              <p className="text-xs text-[#64748B] mt-1">Community Health Index</p>
+      {/* Hero — Community Index */}
+      <div className="card mb-3 sm:mb-4" data-tour="hero">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          {/* Score block */}
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <p className="text-[10px] text-[#475569] font-medium uppercase tracking-widest">
+                {selectedCommunity.name} &mdash; {selectedCommunity.state}
+              </p>
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-semibold border ${
+                connected
+                  ? 'text-[#00C896] border-[#00C896]/25 bg-[#00C896]/06'
+                  : 'text-[#475569] border-[#1A2E4A]'
+              }`}>
+                {connected ? <Wifi size={8} strokeWidth={2.5} /> : <WifiOff size={8} strokeWidth={2.5} />}
+                {connected ? 'LIVE' : 'SIMULATED'}
+              </span>
+              <button
+                onClick={exportReport}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-medium border border-[#1A2E4A] text-[#475569] hover:text-[#94A3B8] hover:border-[#334155] transition-colors"
+              >
+                <Download size={9} strokeWidth={2} />
+                Export
+              </button>
+            </div>
+            <div className="flex items-end gap-3">
+              <span className="text-5xl sm:text-6xl font-black text-white leading-none">{comp}</span>
+              <div className="pb-1">
+                <span className={`${compCls} text-[10px]`}>{compStatus}</span>
+                <p className="text-[10px] text-[#475569] mt-1 uppercase tracking-wide">Community Risk Index</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:min-w-[400px]">
-          <QuickStat icon={<Users size={13} />} label="Population" value={selectedCommunity.population.toLocaleString()} />
-          <QuickStat icon={<Radio size={13} />} label="IoT Sensors" value={`${scores.iot > 70 ? 127 : scores.iot > 40 ? 89 : 42} active`} />
-          <QuickStat icon={<Building2 size={13} />} label="Clinics" value="8 connected" />
-          <QuickStat icon={<TrendingUp size={13} />} label="Farmers Insured" value="2,341" />
+
+          {/* Quick stats — 2 col on mobile, 4 on sm+ */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:min-w-[360px]">
+            <QuickStat icon={<Users size={12} />}     label="Population"   value={selectedCommunity.population.toLocaleString()} />
+            <QuickStat icon={<Radio size={12} />}     label="Sensors"      value={`${scores.iot > 70 ? 127 : scores.iot > 40 ? 89 : 42} online`} />
+            <QuickStat icon={<Building2 size={12} />} label="Clinics"      value="8 connected" />
+            <QuickStat icon={<TrendingUp size={12} />} label="Insured"     value="2,341 farms" />
+          </div>
         </div>
       </div>
 
-      {/* 5 Sector Gauges */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
+      {/* Five sector gauges */}
+      <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mb-3 sm:mb-4" data-tour="gauges">
         {SECTORS.map(s => (
           <RiskGauge key={s} sector={s} score={scores[s]} meta={sectorMeta[s]} />
         ))}
       </div>
 
-      {/* Chart */}
-      <div className="card-glow mb-4">
+      {/* Risk timeline chart */}
+      <div className="card mb-3 sm:mb-4" data-tour="chart">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold text-white">Risk Score Timeline — 24h</span>
-          <div className="flex items-center gap-3 text-[10px]">
-            <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-[#00C896] inline-block rounded" />Composite</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-[#F5A623] inline-block rounded" />Agric</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-[#3B82F6] inline-block rounded" />Health</span>
+          <span className="text-xs sm:text-sm font-semibold text-white">Risk Score Timeline — 24h</span>
+          <div className="flex items-center gap-3 text-[9px] sm:text-[10px] text-[#475569]">
+            <span className="flex items-center gap-1.5"><span className="w-3 h-px bg-[#00C896] inline-block" />Composite</span>
+            <span className="hidden sm:flex items-center gap-1.5"><span className="w-3 h-px bg-[#F5A623] inline-block" />Agriculture</span>
+            <span className="hidden sm:flex items-center gap-1.5"><span className="w-3 h-px bg-[#3B82F6] inline-block" />Health</span>
           </div>
         </div>
-        <ResponsiveContainer width="100%" height={140}>
-          <LineChart data={history} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+        <ResponsiveContainer width="100%" height={120}>
+          <LineChart data={history} margin={{ top: 2, right: 2, bottom: 0, left: -24 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1A2E4A" />
-            <XAxis dataKey="time" tick={{ fontSize: 9, fill: '#475569' }} interval={3} />
-            <YAxis domain={[0, 100]} tick={{ fontSize: 9, fill: '#475569' }} />
+            <XAxis dataKey="time" tick={{ fontSize: 8, fill: '#334155' }} interval={5} />
+            <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: '#334155' }} />
             <Tooltip content={<CustomTooltip />} />
-            <Line type="monotone" dataKey="composite" stroke="#00C896" strokeWidth={2} dot={false} name="Composite" />
-            <Line type="monotone" dataKey="agriculture" stroke="#F5A623" strokeWidth={1.5} dot={false} name="Agric" strokeDasharray="4 2" />
-            <Line type="monotone" dataKey="health" stroke="#3B82F6" strokeWidth={1.5} dot={false} name="Health" strokeDasharray="4 2" />
+            <Line type="monotone" dataKey="composite"   stroke="#00C896" strokeWidth={2}   dot={false} name="Composite"   />
+            <Line type="monotone" dataKey="agriculture" stroke="#F5A623" strokeWidth={1.5} dot={false} name="Agriculture" strokeDasharray="4 2" />
+            <Line type="monotone" dataKey="health"      stroke="#3B82F6" strokeWidth={1.5} dot={false} name="Health"      strokeDasharray="4 2" />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Alerts + Finance */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        <AlertFeed alerts={alerts} />
-        <FinancePanel stats={financeStats} scores={scores} />
+      {/* Alert feed + Finance panel */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-3 sm:mb-4">
+        <div data-tour="alerts"><AlertFeed alerts={alerts} /></div>
+        <div data-tour="finance"><FinancePanel stats={financeStats} scores={scores} /></div>
       </div>
 
-      {/* Nigeria Map */}
+      {/* Community map */}
       <NigeriaMap selectedCommunity={selectedCommunity} onSelectCommunity={handleSetCommunity} />
 
       {/* Scenario demo */}

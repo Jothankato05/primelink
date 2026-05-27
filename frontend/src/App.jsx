@@ -2,14 +2,15 @@ import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import LoginScreen from './components/LoginScreen';
+import OnboardingTour from './components/OnboardingTour';
 import { communities, initialAlerts } from './data/mockData';
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [phase,             setPhase]             = useState('login');   // 'login' | 'tour' | 'app'
   const [selectedCommunity, setSelectedCommunity] = useState(communities[0]);
 
-  if (!loggedIn) {
-    return <LoginScreen onEnter={() => setLoggedIn(true)} />;
+  if (phase === 'login') {
+    return <LoginScreen onEnter={() => setPhase('tour')} />;
   }
 
   return (
@@ -24,6 +25,9 @@ export default function App() {
         selectedCommunity={selectedCommunity}
         setSelectedCommunity={setSelectedCommunity}
       />
+      {phase === 'tour' && (
+        <OnboardingTour onComplete={() => setPhase('app')} />
+      )}
     </div>
   );
 }

@@ -125,8 +125,8 @@ function tick(io) {
 }
 
 export function startSimulator(io) {
-  console.log('🌍 PrimeLink Sensor Simulator starting...');
-  console.log(`   Simulating ${COMMUNITIES.reduce((s, c) => s + c.sensors, 0)} IoT sensors across ${COMMUNITIES.length} communities`);
+  console.log('[simulator] starting');
+  console.log(`[simulator] ${COMMUNITIES.reduce((s, c) => s + c.sensors, 0)} sensors across ${COMMUNITIES.length} communities`);
 
   // Start ticking every 3 seconds
   const interval = setInterval(() => tick(io), 3000);
