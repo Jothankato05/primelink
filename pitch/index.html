@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PrimeLink — Investor Brief 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #040C18;
+    color: #E2E8F0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .page {
+    min-height: 100vh;
+    padding: 64px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #1A2E4A;
+    page-break-after: always;
+  }
+
+  .page:last-child { border-bottom: none; }
+
+  /* Cover */
+  .cover {
+    background: radial-gradient(ellipse at 30% 50%, #0D2137 0%, #040C18 60%);
+    text-align: left;
+  }
+
+  .logo-mark {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, #00C896, #0EA5E9);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .logo-mark svg { width: 28px; height: 28px; }
+
+  .brand {
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    color: #F1F5F9;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .brand span { color: #00C896; }
+
+  .tagline {
+    font-size: 18px;
+    color: #64748B;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-bottom: 56px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+  }
+
+  .cover-description {
+    font-size: 20px;
+    color: #94A3B8;
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 64px;
+  }
+
+  .cover-description strong { color: #E2E8F0; }
+
+  .cover-meta {
+    font-size: 11px;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 40px;
+    margin-top: 48px;
+  }
+
+  .stat {
+    border-left: 2px solid #1A2E4A;
+    padding-left: 16px;
+  }
+
+  .stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #00C896;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+  }
+
+  /* Section titles */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #00C896;
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #F1F5F9;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 24px;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #E2E8F0;
+    margin-bottom: 12px;
+  }
+
+  p {
+    color: #94A3B8;
+    margin-bottom: 16px;
+    max-width: 680px;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    background: #0B1628;
+    border: 1px solid #1A2E4A;
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .card-accent {
+    border-left: 3px solid #00C896;
+  }
+
+  .problem-chain {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .chain-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #1A2E4A;
+  }
+
+  .chain-item:last-child { border-bottom: none; }
+
+  .chain-sector {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    min-width: 90px;
+    text-align: center;
+  }
+
+  .chain-text {
+    font-size: 13px;
+    color: #94A3B8;
+    padding-top: 2px;
+  }
+
+  .sector-env   { background: rgba(0,200,150,0.1);  color: #00C896; }
+  .sector-agr   { background: rgba(245,166,35,0.1); color: #F5A623; }
+  .sector-hlt   { background: rgba(59,130,246,0.1); color: #3B82F6; }
+  .sector-fin   { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+  .sector-iot   { background: rgba(34,211,238,0.1); color: #22D3EE; }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .feature-item {
+    background: #0B1628;
+    border: 1px solid #1A2E4A;
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .feature-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E2E8F0;
+    margin-bottom: 4px;
+  }
+
+  .feature-desc {
+    font-size: 12px;
+    color: #64748B;
+    margin-bottom: 0;
+  }
+
+  .market-number {
+    font-size: 48px;
+    font-weight: 900;
+    color: #F1F5F9;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .market-label {
+    font-size: 12px;
+    color: #475569;
+  }
+
+  .revenue-row {
+    display: flex;
+    gap: 24px;
+  }
+
+  .revenue-card {
+    flex: 1;
+    background: #0B1628;
+    border: 1px solid #1A2E4A;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .revenue-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E2E8F0;
+    margin-bottom: 8px;
+  }
+
+  .revenue-desc {
+    font-size: 12px;
+    color: #64748B;
+    margin-bottom: 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #475569;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid #1A2E4A;
+  }
+
+  td {
+    font-size: 12px;
+    color: #94A3B8;
+    padding: 12px;
+    border-bottom: 1px solid #0D1E35;
+    vertical-align: top;
+  }
+
+  td.highlight { color: #E2E8F0; font-weight: 600; }
+  td.green     { color: #00C896; }
+
+  .traction-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid #1A2E4A;
+  }
+
+  .traction-item:last-child { border-bottom: none; }
+
+  .traction-badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    min-width: 72px;
+    text-align: center;
+    background: rgba(0,200,150,0.1);
+    color: #00C896;
+  }
+
+  .traction-text {
+    font-size: 13px;
+    color: #94A3B8;
+    padding-top: 2px;
+  }
+
+  .ask-number {
+    font-size: 72px;
+    font-weight: 900;
+    color: #00C896;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .use-of-funds {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .fund-item {
+    background: #0B1628;
+    border: 1px solid #1A2E4A;
+    border-radius: 8px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .fund-pct {
+    font-size: 28px;
+    font-weight: 800;
+    color: #00C896;
+    min-width: 60px;
+  }
+
+  .fund-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E2E8F0;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .fund-desc {
+    font-size: 11px;
+    color: #64748B;
+    margin: 0;
+  }
+
+  .footer-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00C896, #0EA5E9);
+  }
+
+  @media print {
+    body { background: #040C18; }
+    .page { page-break-after: always; }
+    .footer-bar { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="page cover">
+  <div class="logo-mark">
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 2 L26 8 L26 20 L14 26 L2 20 L2 8 Z" stroke="white" stroke-width="1.5" fill="none"/>
+      <circle cx="14" cy="14" r="3" fill="white"/>
+      <line x1="14" y1="2" x2="14" y2="11" stroke="white" stroke-width="1" opacity="0.6"/>
+      <line x1="26" y1="8" x2="17.6" y2="11.8" stroke="white" stroke-width="1" opacity="0.6"/>
+      <line x1="26" y1="20" x2="17.6" y2="16.2" stroke="white" stroke-width="1" opacity="0.6"/>
+      <line x1="14" y1="26" x2="14" y2="17" stroke="white" stroke-width="1" opacity="0.6"/>
+      <line x1="2" y1="20" x2="10.4" y2="16.2" stroke="white" stroke-width="1" opacity="0.6"/>
+      <line x1="2" y1="8" x2="10.4" y2="11.8" stroke="white" stroke-width="1" opacity="0.6"/>
+    </svg>
+  </div>
+
+  <div class="brand">Prime<span>Link</span></div>
+  <div class="tagline">Community Risk Intelligence Network</div>
+
+  <div class="cover-description">
+    Real-time cross-sector intelligence that <strong>detects community crises before they escalate</strong>
+    and triggers automated responses across health, agriculture, environment, finance and IoT —
+    simultaneously.
+  </div>
+
+  <div class="stat-row">
+    <div class="stat">
+      <div class="stat-value">36M</div>
+      <div class="stat-label">Smallholder Farmers in Nigeria</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">$10B+</div>
+      <div class="stat-label">Agri-finance Gap</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">5</div>
+      <div class="stat-label">Sectors Monitored Simultaneously</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">0</div>
+      <div class="stat-label">Competitors at this Intersection</div>
+    </div>
+  </div>
+
+  <div class="cover-meta" style="margin-top: 64px;">
+    Primers Corporation &mdash; Nigeria &mdash; 2026 &mdash; Confidential
+  </div>
+</div>
+
+<!-- THE PROBLEM -->
+<div class="page">
+  <div class="section-label">The Problem</div>
+  <h2>Nigeria's crises are cross-sector.<br>Every response system is single-sector.</h2>
+  <p>When a drought hits a farming community, no single system connects the environmental signal to the financial stress it creates, the health risk it triggers, or the agencies that need to respond. Crises cascade while systems remain silent.</p>
+
+  <div class="problem-chain" style="margin-top: 32px;">
+    <div class="chain-item">
+      <span class="chain-sector sector-env">Environment</span>
+      <span class="chain-text">Soil moisture drops below 25% across 847 hectares in Kano North. No early warning is issued because no environmental monitoring system covers this community.</span>
+    </div>
+    <div class="chain-item">
+      <span class="chain-sector sector-agr">Agriculture</span>
+      <span class="chain-text">Crop yield collapses to 41% of forecast. Farmers do not yet know. Extension workers are not scheduled to visit for two weeks.</span>
+    </div>
+    <div class="chain-item">
+      <span class="chain-sector sector-fin">Finance</span>
+      <span class="chain-text">247 households default on micro-loans. Banks flag the accounts. No insurance payout is triggered because no parametric product covers drought at community scale.</span>
+    </div>
+    <div class="chain-item">
+      <span class="chain-sector sector-hlt">Health</span>
+      <span class="chain-text">Food insecurity and financial stress increase malnutrition and stress-related illness. Clinics see the surge but cannot connect it to the drought that started 6 weeks earlier.</span>
+    </div>
+    <div class="chain-item">
+      <span class="chain-sector sector-iot">IoT</span>
+      <span class="chain-text">No sensor infrastructure exists in the community. The entire cascade was invisible because the data layer was never built.</span>
+    </div>
+  </div>
+</div>
+
+<!-- THE SOLUTION -->
+<div class="page">
+  <div class="section-label">The Solution</div>
+  <h2>PrimeLink: one platform,<br>five sectors, zero silos.</h2>
+
+  <div class="two-col">
+    <div>
+      <p>PrimeLink builds the data layer that connects environmental, agricultural, health, financial, and IoT signals into a single community intelligence index. When signals converge into a crisis pattern, automated responses execute immediately — no human triage required.</p>
+      <p>The platform operates at community level — the granularity that matters for Nigeria's 774 LGAs — not at state or national aggregates that mask local crises.</p>
+
+      <div class="card card-accent" style="margin-top: 24px;">
+        <div style="font-size: 13px; color: #94A3B8; line-height: 1.8;">
+          Drought detected &rarr; crop failure predicted &rarr; loan default risk calculated &rarr;
+          <strong style="color: #00C896;">parametric insurance disbursed to 847 households in under 30 seconds.</strong>
+          Zero claims. Zero delays. Zero human intervention.
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="feature-title">Community Risk Index</div>
+        <div class="feature-desc">Composite score updated every 3 seconds from 127 field IoT sensors</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-title">Cross-sector Correlation</div>
+        <div class="feature-desc">Propagates risk signals forward across sectors with configurable delay weights</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-title">Parametric Insurance</div>
+        <div class="feature-desc">Finance score below threshold triggers instant payout — no claims process</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-title">Agency Notification</div>
+        <div class="feature-desc">NEMA, FMoH, NCDC, FMARD notified automatically with evidence package</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-title">Live Alert Feed</div>
+        <div class="feature-desc">Real-time alerts classified by severity, distributed to subscribed stakeholders</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-title">Risk Timeline</div>
+        <div class="feature-desc">24-hour per-sector trend data enabling early detection of developing crises</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MARKET -->
+<div class="page">
+  <div class="section-label">Market Opportunity</div>
+  <h2>Four converging markets.<br>One platform at the intersection.</h2>
+
+  <div class="three-col" style="margin-top: 32px;">
+    <div class="card">
+      <div class="market-number">$30B</div>
+      <div class="market-label" style="margin-bottom: 12px;">Nigeria fintech market (2025)</div>
+      <p style="font-size: 12px; margin: 0;">8 of 9 African unicorns are fintech. PrimeLink integrates directly with the infrastructure these companies need to serve rural customers accurately.</p>
+    </div>
+    <div class="card">
+      <div class="market-number">$10B</div>
+      <div class="market-label" style="margin-bottom: 12px;">Parametric insurance market (2033)</div>
+      <p style="font-size: 12px; margin: 0;">Growing at 12.25% CAGR. Kenya and Nigeria are the highest-growth markets in MEA. PrimeLink provides the data infrastructure parametric insurers cannot build alone.</p>
+    </div>
+    <div class="card">
+      <div class="market-number">36M</div>
+      <div class="market-label" style="margin-bottom: 12px;">Uninsured smallholder farmers in Nigeria</div>
+      <p style="font-size: 12px; margin: 0;">The agri-finance gap exceeds $10B. No existing platform connects environmental IoT data to financial product triggers at LGA scale.</p>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px;">
+    <h3>Competitive Landscape</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Sectors Covered</th>
+          <th>IoT Data Layer</th>
+          <th>Automated Finance</th>
+          <th>Nigeria-Native</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Pula</td>
+          <td>Agriculture only</td>
+          <td>Satellite only</td>
+          <td>Crop insurance, manual claim</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>Helium Health</td>
+          <td>Health only</td>
+          <td>None</td>
+          <td>None</td>
+          <td>Partial</td>
+        </tr>
+        <tr>
+          <td>ARC Ltd</td>
+          <td>Sovereign risk</td>
+          <td>None</td>
+          <td>Government-level only</td>
+          <td>No</td>
+        </tr>
+        <tr style="border-top: 1px solid #00C896;">
+          <td class="highlight">PrimeLink</td>
+          <td class="green">5 sectors</td>
+          <td class="green">IoT + crowdsource + satellite</td>
+          <td class="green">Parametric, instant, automated</td>
+          <td class="green">Yes</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- BUSINESS MODEL -->
+<div class="page">
+  <div class="section-label">Business Model</div>
+  <h2>Three compounding<br>revenue streams.</h2>
+  <p>PrimeLink operates as a B2B and B2G data infrastructure platform. Each revenue stream benefits from the same underlying data asset — community risk intelligence — creating compounding value as the sensor network grows.</p>
+
+  <div class="revenue-row" style="margin-top: 32px;">
+    <div class="revenue-card">
+      <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #00C896; margin-bottom: 12px;">Stream 01</div>
+      <div class="revenue-name">Risk Data API</div>
+      <p class="revenue-desc">Monthly subscription for banks, insurers and microfinance institutions consuming community risk scores for credit underwriting, insurance pricing, and loan portfolio management.</p>
+      <div style="margin-top: 16px; font-size: 11px; color: #475569;">Target: CBN-licensed MFBs, AIICO, NEM Insurance, insurtech companies</div>
+    </div>
+    <div class="revenue-card">
+      <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #00C896; margin-bottom: 12px;">Stream 02</div>
+      <div class="revenue-name">Insurance Integration</div>
+      <p class="revenue-desc">Revenue share on parametric insurance premiums for products that use PrimeLink sensor data as the trigger mechanism. The platform becomes the settlement infrastructure.</p>
+      <div style="margin-top: 16px; font-size: 11px; color: #475569;">Target: Pula, NIRSAL, new insurtech entrants building on PrimeLink data</div>
+    </div>
+    <div class="revenue-card">
+      <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #00C896; margin-bottom: 12px;">Stream 03</div>
+      <div class="revenue-name">Government Contracts</div>
+      <p class="revenue-desc">Annual contracts with federal and state agencies for early warning, crisis monitoring, and response coordination dashboards. Palantir-model forward-deployed engineering teams.</p>
+      <div style="margin-top: 16px; font-size: 11px; color: #475569;">Target: NEMA, FMoH, FMARD, state emergency management agencies</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 40px; background: #0B1628; border: 1px solid #1A2E4A; border-radius: 12px; padding: 24px;">
+    <div style="font-size: 13px; color: #94A3B8; line-height: 1.9;">
+      <strong style="color: #E2E8F0;">Data moat:</strong> Every sensor reading added to the network improves risk model accuracy, making PrimeLink's intelligence increasingly difficult to replicate. First-mover advantage in the LGA-level community risk data market is significant and durable.
+    </div>
+  </div>
+</div>
+
+<!-- TRACTION -->
+<div class="page">
+  <div class="section-label">Traction</div>
+  <h2>Production-ready platform.<br>Built at speed.</h2>
+
+  <div class="traction-item">
+    <span class="traction-badge">Deployed</span>
+    <span class="traction-text">Full-stack platform live at jothankato05.github.io/primelink — React dashboard with real-time Socket.io backend, 127-sensor IoT simulator, and 5-sector risk engine</span>
+  </div>
+  <div class="traction-item">
+    <span class="traction-badge">Built</span>
+    <span class="traction-text">Three crisis scenario replays (Drought, Flood, Disease Outbreak) each demonstrating automated cross-sector response and parametric insurance disbursement</span>
+  </div>
+  <div class="traction-item">
+    <span class="traction-badge">Built</span>
+    <span class="traction-text">REST API with five endpoints serving community scores, alert feeds, and system health — ready for bank and insurer integration</span>
+  </div>
+  <div class="traction-item">
+    <span class="traction-badge">Built</span>
+    <span class="traction-text">React Native mobile application for field officers — community risk index, sector scores, and live alert feed on iOS and Android</span>
+  </div>
+  <div class="traction-item">
+    <span class="traction-badge">Built</span>
+    <span class="traction-text">Cross-sector correlation risk engine with configurable propagation weights and mean-reverting random walk sensor simulation per community baseline</span>
+  </div>
+  <div class="traction-item">
+    <span class="traction-badge">Parallel</span>
+    <span class="traction-text">SecureLink — emergency SOS platform also under development at Primers Corporation, serving individual safety and security intelligence for the same markets</span>
+  </div>
+</div>
+
+<!-- ASK -->
+<div class="page">
+  <div class="section-label">Investment</div>
+  <h2>Seed round.</h2>
+
+  <div class="ask-number">$350,000</div>
+  <p style="font-size: 16px; color: #94A3B8; margin-top: 8px; margin-bottom: 48px;">
+    Seed financing to deploy physical sensor infrastructure, acquire first institutional data customers, and build the government partnerships pipeline.
+  </p>
+
+  <div class="use-of-funds">
+    <div class="fund-item">
+      <div class="fund-pct">40%</div>
+      <div>
+        <span class="fund-label">IoT Infrastructure</span>
+        <p class="fund-desc">Physical sensor deployment across 3 pilot LGAs in Kano, Oyo, and Rivers states — soil, air quality, water table, and rainfall sensors</p>
+      </div>
+    </div>
+    <div class="fund-item">
+      <div class="fund-pct">25%</div>
+      <div>
+        <span class="fund-label">Engineering</span>
+        <p class="fund-desc">Backend infrastructure, production database, satellite data integration, and mobile application release</p>
+      </div>
+    </div>
+    <div class="fund-item">
+      <div class="fund-pct">20%</div>
+      <div>
+        <span class="fund-label">Commercial</span>
+        <p class="fund-desc">Government partnerships, bank and insurer API sales, community onboarding, and regulatory engagement with CBN and NAICOM</p>
+      </div>
+    </div>
+    <div class="fund-item">
+      <div class="fund-pct">15%</div>
+      <div>
+        <span class="fund-label">Operations</span>
+        <p class="fund-desc">Legal entity, compliance, team expansion, and 18 months operational runway</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 48px; border-top: 1px solid #1A2E4A; padding-top: 32px;">
+    <div style="font-size: 11px; color: #334155; text-transform: uppercase; letter-spacing: 0.1em;">Contact</div>
+    <div style="font-size: 16px; color: #E2E8F0; margin-top: 8px; font-weight: 600;">Primers Corporation — Nigeria</div>
+    <div style="font-size: 13px; color: #475569; margin-top: 4px;">github.com/Jothankato05/primelink</div>
+  </div>
+</div>
+
+<div class="footer-bar"></div>
+</body>
+</html>
