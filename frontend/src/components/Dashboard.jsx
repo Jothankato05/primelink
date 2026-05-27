@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { Users, Radio, Building2, TrendingUp } from 'lucide-react';
+import { Users, Radio, Building2, TrendingUp, Download } from 'lucide-react';
 import RiskGauge from './RiskGauge';
 import AlertFeed from './AlertFeed';
 import FinancePanel from './FinancePanel';
@@ -79,6 +79,76 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
     setAlerts(initialAlerts);
   }, []);
 
+  const exportReport = () => {
+    const now = new Date().toLocaleString('en-NG');
+    const comp = composite(scores);
+    const { text: status } = getScoreLabel(comp);
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>PrimeLink Risk Report — ${selectedCommunity.name}</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #040C18; color: #F1F5F9; margin: 0; padding: 40px; }
+    h1 { color: #00C896; font-size: 28px; margin-bottom: 4px; }
+    h2 { color: #94A3B8; font-size: 14px; font-weight: normal; margin-top: 0; }
+    .hero { background: #0B1628; border: 1px solid #1A2E4A; border-radius: 12px; padding: 24px; margin: 24px 0; display: flex; align-items: center; gap: 24px; }
+    .score-big { font-size: 72px; font-weight: 900; color: ${comp >= 65 ? '#00C896' : comp >= 40 ? '#F5A623' : '#FF3A5C'}; line-height: 1; }
+    .status { background: ${comp >= 65 ? 'rgba(0,200,150,0.1)' : comp >= 40 ? 'rgba(245,166,35,0.1)' : 'rgba(255,58,92,0.1)'}; color: ${comp >= 65 ? '#00C896' : comp >= 40 ? '#F5A623' : '#FF3A5C'}; border-radius: 99px; padding: 4px 12px; font-size: 12px; font-weight: bold; display: inline-block; }
+    .sectors { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 24px 0; }
+    .sector { background: #0B1628; border: 1px solid #1A2E4A; border-radius: 10px; padding: 16px; text-align: center; }
+    .sector-score { font-size: 28px; font-weight: 900; }
+    .sector-name { font-size: 11px; color: #94A3B8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .alerts-section { background: #0B1628; border: 1px solid #1A2E4A; border-radius: 12px; padding: 20px; margin: 24px 0; }
+    .alert-item { border-bottom: 1px solid #1A2E4A; padding: 10px 0; font-size: 13px; }
+    .alert-item:last-child { border-bottom: none; }
+    .footer { text-align: center; color: #334155; font-size: 12px; margin-top: 40px; }
+    .green { color: #00C896; } .amber { color: #F5A623; } .red { color: #FF3A5C; }
+  </style>
+</head>
+<body>
+  <h1>⬡ PrimeLink Community Risk Report</h1>
+  <h2>Generated: ${now} · By Primers Corporation</h2>
+
+  <div class="hero">
+    <div>
+      <div class="score-big">${comp}</div>
+      <div class="status">${status}</div>
+    </div>
+    <div>
+      <div style="font-size:20px; font-weight:700; margin-bottom:8px">${selectedCommunity.name}, ${selectedCommunity.state}</div>
+      <div style="color:#94A3B8; font-size:13px">Population: ${selectedCommunity.population.toLocaleString()}</div>
+      <div style="color:#94A3B8; font-size:13px">Community Health Index</div>
+    </div>
+  </div>
+
+  <div class="sectors">
+    ${Object.entries(scores).map(([sec, val]) => `
+    <div class="sector">
+      <div class="sector-score ${val >= 65 ? 'green' : val >= 40 ? 'amber' : 'red'}">${val}</div>
+      <div class="sector-name">${sec}</div>
+    </div>`).join('')}
+  </div>
+
+  <div class="alerts-section">
+    <h3 style="margin-top:0; color:#F1F5F9; font-size:14px">Recent Alerts</h3>
+    ${alerts.slice(0, 8).map(a => `<div class="alert-item">${a.icon || ''} ${a.text} <span style="color:#475569; font-size:11px">${a.time}</span></div>`).join('')}
+  </div>
+
+  <div class="footer">
+    PrimeLink · Africa's Community Risk Intelligence Network · Primers Corporation · Nigeria · ${new Date().getFullYear()}
+  </div>
+</body>
+</html>`;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `PrimeLink-Report-${selectedCommunity.name.replace(/\s+/g, '-')}-${Date.now()}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const comp = composite(scores);
   const { text: compStatus, cls: compCls } = getScoreLabel(comp);
 
@@ -102,9 +172,18 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
       {/* Community Health Index hero */}
       <div className="card-glow mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <p className="text-xs text-[#64748B] font-medium uppercase tracking-wider mb-1">
-            {selectedCommunity.name} · {selectedCommunity.state}
-          </p>
+          <div className="flex items-center gap-3 mb-1">
+            <p className="text-xs text-[#64748B] font-medium uppercase tracking-wider">
+              {selectedCommunity.name} · {selectedCommunity.state}
+            </p>
+            <button
+              onClick={exportReport}
+              className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#0D1E35] border border-[#1A2E4A] hover:border-[#00C896]/40 text-[#64748B] hover:text-[#00C896] transition-all text-[10px] font-medium"
+            >
+              <Download size={10} />
+              Export Report
+            </button>
+          </div>
           <div className="flex items-end gap-3">
             <span className="text-5xl font-black text-white">{comp}</span>
             <div className="mb-1">

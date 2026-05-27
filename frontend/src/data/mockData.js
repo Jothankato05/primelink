@@ -68,6 +68,134 @@ export const financeStats = {
   premiumsCollected: '₦8.7M',
 };
 
+export const FLOOD_SCENARIO_STEPS = [
+  {
+    id: 'f1', delay: 0,
+    alert: { type: 'amber', icon: '🌧️', text: 'Rainfall sensors: 240mm recorded in 6 hours — threshold exceeded', sector: 'environment' },
+    scores: { environment: 48 },
+  },
+  {
+    id: 'f2', delay: 2500,
+    alert: { type: 'red', icon: '🚨', text: 'FLOOD ALERT: Rivers Ogun and Benue breaching banks — 3 LGAs at risk', sector: 'environment' },
+    scores: { environment: 28 },
+  },
+  {
+    id: 'f3', delay: 5000,
+    alert: { type: 'red', icon: '🏚️', text: 'DISPLACEMENT RISK: 1,240 households in flood path — evacuation needed', sector: 'health' },
+    scores: { health: 45 },
+  },
+  {
+    id: 'f4', delay: 7500,
+    alert: { type: 'amber', icon: '🌾', text: 'AGRICULTURE IMPACT: 430 hectares of farmland submerged — season loss', sector: 'agriculture' },
+    scores: { agriculture: 32 },
+  },
+  {
+    id: 'f5', delay: 10000,
+    alert: { type: 'red', icon: '💸', text: 'FINANCE ALERT: Property and crop losses estimated at ₦180M', sector: 'finance' },
+    scores: { finance: 35 },
+  },
+  {
+    id: 'f6', delay: 12500,
+    alert: { type: 'amber', icon: '🦠', text: 'HEALTH WARNING: Waterborne disease risk elevated — cholera watch activated', sector: 'health' },
+    scores: { health: 33 },
+  },
+  {
+    id: 'f7', delay: 15000,
+    alert: { type: 'info', icon: '🤖', text: 'PrimeLink AI: Multi-agency flood response protocol activated...', sector: null },
+    scores: {},
+  },
+  {
+    id: 'f8', delay: 17500,
+    alert: { type: 'green', icon: '✅', text: 'FLOOD INSURANCE TRIGGERED: ₦95M → 1,240 households (instant payout)', sector: 'finance' },
+    scores: { finance: 55 },
+  },
+  {
+    id: 'f9', delay: 20000,
+    alert: { type: 'green', icon: '✅', text: 'NEMA DEPLOYED: 4 emergency response teams + water purification units', sector: null },
+    scores: { health: 52 },
+  },
+  {
+    id: 'f10', delay: 22500,
+    alert: { type: 'green', icon: '✅', text: 'EVACUATION COMPLETE: 1,240 households moved to 6 safe shelters', sector: 'health' },
+    scores: {},
+  },
+  {
+    id: 'f11', delay: 25000,
+    alert: { type: 'green', icon: '✅', text: 'HEALTH MINISTRY: Mobile clinics deployed — waterborne disease risk contained', sector: 'health' },
+    scores: { health: 65, environment: 44 },
+  },
+  {
+    id: 'f12', delay: 27500,
+    alert: { type: 'info', icon: '📈', text: 'RECOVERY ACTIVE: Flood waters receding — rebuilding support activated', sector: null },
+    scores: {},
+    final: true,
+  },
+];
+
+export const DISEASE_SCENARIO_STEPS = [
+  {
+    id: 'd1', delay: 0,
+    alert: { type: 'amber', icon: '🏥', text: 'Clinic network: spike in fever/respiratory cases — 47 reports in 24h', sector: 'health' },
+    scores: { health: 55 },
+  },
+  {
+    id: 'd2', delay: 2500,
+    alert: { type: 'red', icon: '🚨', text: 'HEALTH ALERT: Suspected disease cluster confirmed — Maiduguri Metro', sector: 'health' },
+    scores: { health: 35 },
+  },
+  {
+    id: 'd3', delay: 5000,
+    alert: { type: 'amber', icon: '📡', text: 'IoT: Air quality sensors detect PM2.5 spike — 3x safe limit in 2 wards', sector: 'iot' },
+    scores: { iot: 52, environment: 55 },
+  },
+  {
+    id: 'd4', delay: 7500,
+    alert: { type: 'amber', icon: '🌾', text: 'AGRICULTURE IMPACT: 30% of farmworkers unable to work — harvest at risk', sector: 'agriculture' },
+    scores: { agriculture: 50 },
+  },
+  {
+    id: 'd5', delay: 10000,
+    alert: { type: 'red', icon: '💸', text: 'FINANCE IMPACT: Market closures — economic activity down 42% in affected wards', sector: 'finance' },
+    scores: { finance: 40 },
+  },
+  {
+    id: 'd6', delay: 12500,
+    alert: { type: 'red', icon: '🏥', text: 'CRITICAL: Clinic capacity at 94% — overflow risk within 6 hours', sector: 'health' },
+    scores: { health: 22 },
+  },
+  {
+    id: 'd7', delay: 15000,
+    alert: { type: 'info', icon: '🤖', text: 'PrimeLink AI: Epidemic response protocol initiated — WHO and FMoH notified', sector: null },
+    scores: {},
+  },
+  {
+    id: 'd8', delay: 17500,
+    alert: { type: 'green', icon: '✅', text: 'HEALTH INSURANCE: Emergency medical coverage activated for 8,500 residents', sector: 'finance' },
+    scores: { finance: 55 },
+  },
+  {
+    id: 'd9', delay: 20000,
+    alert: { type: 'green', icon: '✅', text: 'NCDC RESPONSE: Disease surveillance team + 2 field hospitals deployed', sector: 'health' },
+    scores: { health: 42 },
+  },
+  {
+    id: 'd10', delay: 22500,
+    alert: { type: 'green', icon: '✅', text: 'CONTAINMENT: Affected wards isolated — contact tracing covering 94% of cases', sector: 'health' },
+    scores: { health: 55, iot: 72 },
+  },
+  {
+    id: 'd11', delay: 25000,
+    alert: { type: 'green', icon: '✅', text: 'AIR QUALITY: Emergency filtration units deployed — PM2.5 returning to safe levels', sector: 'environment' },
+    scores: { environment: 68, agriculture: 62 },
+  },
+  {
+    id: 'd12', delay: 27500,
+    alert: { type: 'info', icon: '📈', text: 'RECOVERY ACTIVE: New cases declining — community health index stabilizing', sector: null },
+    scores: {},
+    final: true,
+  },
+];
+
 export const SCENARIO_STEPS = [
   {
     id: 's1', delay: 0,
