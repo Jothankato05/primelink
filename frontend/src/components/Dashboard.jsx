@@ -1,11 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { Users, Radio, Building2, TrendingUp, Download } from 'lucide-react';
+import { Users, Radio, Building2, TrendingUp, Download, Wifi, WifiOff } from 'lucide-react';
 import RiskGauge from './RiskGauge';
 import AlertFeed from './AlertFeed';
 import FinancePanel from './FinancePanel';
 import NigeriaMap from './NigeriaMap';
 import ScenarioControl from './ScenarioControl';
+import { useSocket } from '../hooks/useSocket';
 import { getInitialScores, sectorMeta, getScoreLabel, initialAlerts, financeStats, getHistoricalData, communities } from '../data/mockData';
 
 const SECTORS = ['environment', 'agriculture', 'health', 'finance', 'iot'];
@@ -19,31 +20,63 @@ let alertCounter = 100;
 
 export default function Dashboard({ selectedCommunity: propCommunity, setSelectedCommunity: onSetCommunity }) {
   const [selectedCommunity, setSelectedCommunity] = useState(propCommunity ?? communities[0]);
+  const [scores, setScores] = useState(getInitialScores());
+  const [alerts, setAlerts] = useState(initialAlerts);
+  const [history, setHistory] = useState(getHistoricalData());
+  const [isRunning, setIsRunning] = useState(false);
+  const [mapOverview, setMapOverview] = useState([]);
+  const isRunningRef = useRef(false);
 
   const handleSetCommunity = (c) => {
     setSelectedCommunity(c);
     onSetCommunity?.(c);
   };
-  const [scores, setScores] = useState(getInitialScores());
-  const [alerts, setAlerts] = useState(initialAlerts);
-  const [history, setHistory] = useState(getHistoricalData());
-  const [isRunning, setIsRunning] = useState(false);
 
-  // Gentle live fluctuation when not in scenario
+  // Socket.io — live backend data
+  const { connected, backendOnline } = useSocket({
+    communityId: selectedCommunity.id,
+    onSensorUpdate: (data) => {
+      if (isRunningRef.current) return; // don't override scenario
+      if (data.communityId !== selectedCommunity.id) return;
+      setScores(data.scores);
+      setHistory(prev => {
+        const point = {
+          time: new Date().toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' }),
+          composite: data.composite,
+          environment: data.scores.environment,
+          agriculture: data.scores.agriculture,
+          health: data.scores.health,
+        };
+        return [...prev.slice(-23), point];
+      });
+    },
+    onAlertNew: (alert) => {
+      if (alert.community && alert.community !== selectedCommunity.name) return;
+      setAlerts(prev => [
+        { ...alert, id: ++alertCounter, time: 'just now' },
+        ...prev,
+      ].slice(0, 30));
+    },
+    onMapOverview: setMapOverview,
+  });
+
+  // Keep ref in sync for socket handler closure
+  useEffect(() => { isRunningRef.current = isRunning; }, [isRunning]);
+
+  // Fallback local fluctuation when backend is offline
   useEffect(() => {
-    if (isRunning) return;
+    if (backendOnline || isRunning) return;
     const interval = setInterval(() => {
       setScores(prev => {
         const next = { ...prev };
         SECTORS.forEach(s => {
-          const delta = (Math.random() - 0.5) * 2;
-          next[s] = Math.max(10, Math.min(99, Math.round(prev[s] + delta)));
+          next[s] = Math.max(10, Math.min(99, Math.round(prev[s] + (Math.random() - 0.5) * 2)));
         });
         return next;
       });
     }, 4000);
     return () => clearInterval(interval);
-  }, [isRunning]);
+  }, [backendOnline, isRunning]);
 
   // Update history chart every 30s
   useEffect(() => {
@@ -172,10 +205,19 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
       {/* Community Health Index hero */}
       <div className="card-glow mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3 mb-1">
+          <div className="flex items-center gap-2 mb-1 flex-wrap">
             <p className="text-xs text-[#64748B] font-medium uppercase tracking-wider">
               {selectedCommunity.name} · {selectedCommunity.state}
             </p>
+            {/* Backend connection badge */}
+            <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border ${
+              connected
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                : 'bg-[#1A2E4A] text-[#64748B] border-[#1A2E4A]'
+            }`}>
+              {connected ? <Wifi size={9} /> : <WifiOff size={9} />}
+              {connected ? 'LIVE' : 'SIMULATED'}
+            </span>
             <button
               onClick={exportReport}
               className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#0D1E35] border border-[#1A2E4A] hover:border-[#00C896]/40 text-[#64748B] hover:text-[#00C896] transition-all text-[10px] font-medium"
