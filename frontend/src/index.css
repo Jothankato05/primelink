@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #000000;
+  color: #F1F5F9;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #222222;
+  border: 1px solid #000;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00C896;
+}
+
+@layer components {
+  .card {
+    @apply bg-black border border-neutral-800 p-4 relative;
+  }
+  .card-glow {
+    @apply card;
+  }
+  .badge-green {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-500/30 rounded-none;
+  }
+  .badge-amber {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-amber-950 text-amber-400 border border-amber-500/30 rounded-none;
+  }
+  .badge-red {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-rose-950 text-rose-400 border border-rose-500/30 rounded-none;
+  }
+  .badge-blue {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-neutral-900 text-neutral-400 border border-neutral-700 rounded-none;
+  }
+}
+
+@keyframes pl-geo-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-40px, -40px); }
+}
+
+.pl-texture-geo {
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  right: -40px;
+  bottom: -40px;
+  width: calc(100% + 80px);
+  height: calc(100vh + 80px);
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0l40 40m0-40L0 40' stroke='rgba(0,200,150,0.08)' stroke-width='0.5'/%3E%3Ccircle cx='20' cy='20' r='1.5' fill='rgba(255,255,255,0.15)'/%3E%3C/svg%3E");
+  animation: pl-geo-move 2.5s linear infinite;
+}
