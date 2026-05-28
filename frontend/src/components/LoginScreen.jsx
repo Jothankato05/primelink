@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Activity, ArrowRight, Radio, Globe, BarChart2 } from 'lucide-react';
+import { Hexagon, Network, ArrowRight, Radio, Globe, BarChart2 } from 'lucide-react';
 
 const PLATFORM_STATS = [
   { value: '8',   label: 'Communities',   Icon: Globe    },
@@ -31,14 +31,16 @@ export default function LoginScreen({ onEnter }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden bg-black"
       style={{
-        background: '#040C18',
         opacity:    visible && !leaving ? 1 : 0,
         transform:  leaving ? 'scale(0.98)' : 'scale(1)',
         transition: 'opacity 0.5s ease, transform 0.5s ease',
       }}
     >
+      {/* Geometric Texture Background */}
+      <div className="pl-texture-geo z-0"></div>
+
       {/* Structural grid */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none"
@@ -47,44 +49,26 @@ export default function LoginScreen({ onEnter }) {
       >
         <defs>
           <pattern id="pl-grid" width="64" height="64" patternUnits="userSpaceOnUse">
-            <path d="M 64 0 L 0 0 0 64" fill="none" stroke="#94A3B8" strokeWidth="0.5" />
+            <path d="M 64 0 L 0 0 0 64" fill="none" stroke="#FFFFFF" strokeWidth="0.5" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#pl-grid)" />
       </svg>
 
-      {/* Ambient glow — left */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          top: '20%', left: '-10%',
-          width: '50vw', height: '50vw',
-          background: 'radial-gradient(circle, rgba(0,200,150,0.07) 0%, transparent 70%)',
-        }}
-      />
-      {/* Ambient glow — right */}
-      <div
-        className="absolute pointer-events-none"
-        style={{
-          bottom: '10%', right: '-10%',
-          width: '40vw', height: '40vw',
-          background: 'radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%)',
-        }}
-      />
+
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-6 w-full max-w-xl">
 
         {/* Mark */}
         <div className="mb-8 flex flex-col items-center gap-5">
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center"
-            style={{
-              background: 'linear-gradient(135deg, #00C896 0%, #0EA5E9 100%)',
-              boxShadow:  '0 0 48px rgba(0,200,150,0.25)',
-            }}
-          >
-            <Activity size={30} className="text-white" strokeWidth={1.5} />
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            {/* Ambient glow instead of a solid box */}
+            <div className="absolute inset-0 bg-[#00C896] blur-xl opacity-20 rounded-full"></div>
+            {/* Geometric outer shell */}
+            <Hexagon size={56} className="text-[#00C896] absolute z-10" strokeWidth={1} />
+            {/* Inner nodes */}
+            <Network size={24} className="text-white relative z-20" strokeWidth={1.5} />
           </div>
 
           <div>
@@ -116,7 +100,7 @@ export default function LoginScreen({ onEnter }) {
         {/* Description */}
         <p className="text-[#64748B] text-sm leading-relaxed mb-10 max-w-md">
           Real-time cross-sector intelligence across health, agriculture, environment,
-          finance and IoT — enabling proactive intervention before community crises escalate.
+          finance and IoT enabling proactive intervention before community crises escalate.
         </p>
 
         {/* Platform stats */}
@@ -148,19 +132,19 @@ export default function LoginScreen({ onEnter }) {
           <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
         </button>
 
-        <p className="mt-7 text-[#1E3A5F] text-[10px] font-medium tracking-widest uppercase">
-          Primers Corporation — Nigeria — 2026
+        <p className="mt-7 text-neutral-600 text-[10px] font-medium tracking-widest uppercase">
+          Primers Corporation Nigeria 2026
         </p>
       </div>
 
       {/* Status footer */}
       <div
         className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2.5 px-4 py-2 rounded-full"
-        style={{ background: 'rgba(11,22,40,0.8)', border: '1px solid #1A2E4A' }}
+        style={{ background: 'rgba(0,0,0,0.8)', border: '1px solid #333' }}
       >
         <span className="w-1.5 h-1.5 rounded-full bg-[#00C896] animate-pulse" />
         <span className="text-[10px] text-[#00C896] font-semibold tracking-wide">SYSTEM ONLINE</span>
-        <span className="text-[10px] text-[#334155]">127 sensors active — 8 communities monitored</span>
+        <span className="text-[10px] text-neutral-400">127 sensors active 8 communities monitored</span>
       </div>
     </div>
   );

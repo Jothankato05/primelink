@@ -23,35 +23,22 @@ export default function RiskGauge({ sector, score, meta }) {
   const Icon = SECTOR_ICONS[meta.iconKey] ?? Activity;
 
   return (
-    <div
-      className="card flex flex-col items-center text-center transition-all duration-500 p-3 sm:p-4"
-      style={{ borderColor: `${color}22` }}
-    >
+    <div className="card flex flex-col items-center text-center transition-all duration-500 p-3 sm:p-4">
       <div className="relative">
         <svg
           viewBox="0 0 110 65"
           className="w-24 h-14 sm:w-28 sm:h-16"
           aria-label={`${meta.label} risk score: ${score}`}
         >
-          <defs>
-            <filter id={`glow-${sector}`} x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="2" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
           {/* Track */}
           <circle
             cx={cx} cy={cy} r={r}
             fill="none"
-            stroke="#1A2E4A"
-            strokeWidth="8"
+            stroke="#222222"
+            strokeWidth="6"
             strokeDasharray={`${half} ${circ}`}
             strokeDashoffset={offset}
-            strokeLinecap="round"
+            strokeLinecap="butt"
           />
 
           {/* Fill */}
@@ -59,11 +46,10 @@ export default function RiskGauge({ sector, score, meta }) {
             cx={cx} cy={cy} r={r}
             fill="none"
             stroke={color}
-            strokeWidth="8"
+            strokeWidth="6"
             strokeDasharray={`${fillLen} ${circ}`}
             strokeDashoffset={offset}
-            strokeLinecap="round"
-            filter={`url(#glow-${sector})`}
+            strokeLinecap="butt"
             style={{ transition: 'stroke-dasharray 1.4s cubic-bezier(0.4,0,0.2,1)' }}
           />
 
@@ -93,7 +79,7 @@ export default function RiskGauge({ sector, score, meta }) {
 
       <div className="mt-1 space-y-0.5">
         <p className="text-xs sm:text-sm font-semibold text-white leading-none">{meta.label}</p>
-        <p className="text-[9px] sm:text-[10px] text-[#64748B]">{meta.unit}</p>
+        <p className="text-[9px] sm:text-[10px] text-neutral-500">{meta.unit}</p>
       </div>
 
       <div className={`mt-2 text-[10px] ${cls}`}>

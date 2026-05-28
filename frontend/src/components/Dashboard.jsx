@@ -125,17 +125,17 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
     body { font-family: 'Segoe UI', sans-serif; background: #040C18; color: #F1F5F9; margin: 0; padding: 40px; }
     h1 { color: #00C896; font-size: 28px; margin-bottom: 4px; }
     h2 { color: #94A3B8; font-size: 14px; font-weight: normal; margin-top: 0; }
-    .hero { background: #0B1628; border: 1px solid #1A2E4A; border-radius: 12px; padding: 24px; margin: 24px 0; display: flex; align-items: center; gap: 24px; }
+    .hero { background: #000; border: 1px solid #333; border-radius: 0; padding: 24px; margin: 24px 0; display: flex; align-items: center; gap: 24px; }
     .score-big { font-size: 72px; font-weight: 900; color: ${comp >= 65 ? '#00C896' : comp >= 40 ? '#F5A623' : '#FF3A5C'}; line-height: 1; }
-    .status { background: ${comp >= 65 ? 'rgba(0,200,150,0.1)' : comp >= 40 ? 'rgba(245,166,35,0.1)' : 'rgba(255,58,92,0.1)'}; color: ${comp >= 65 ? '#00C896' : comp >= 40 ? '#F5A623' : '#FF3A5C'}; border-radius: 99px; padding: 4px 12px; font-size: 12px; font-weight: bold; display: inline-block; }
+    .status { background: ${comp >= 65 ? 'rgba(0,200,150,0.1)' : comp >= 40 ? 'rgba(245,166,35,0.1)' : 'rgba(255,58,92,0.1)'}; color: ${comp >= 65 ? '#00C896' : comp >= 40 ? '#F5A623' : '#FF3A5C'}; border-radius: 0; padding: 4px 12px; font-size: 12px; font-weight: bold; display: inline-block; }
     .sectors { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 24px 0; }
-    .sector { background: #0B1628; border: 1px solid #1A2E4A; border-radius: 10px; padding: 16px; text-align: center; }
+    .sector { background: #000; border: 1px solid #333; border-radius: 0; padding: 16px; text-align: center; }
     .sector-score { font-size: 28px; font-weight: 900; }
-    .sector-name { font-size: 11px; color: #94A3B8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .alerts-section { background: #0B1628; border: 1px solid #1A2E4A; border-radius: 12px; padding: 20px; margin: 24px 0; }
-    .alert-item { border-bottom: 1px solid #1A2E4A; padding: 10px 0; font-size: 13px; }
+    .sector-name { font-size: 11px; color: #888; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .alerts-section { background: #000; border: 1px solid #333; border-radius: 0; padding: 20px; margin: 24px 0; }
+    .alert-item { border-bottom: 1px solid #333; padding: 10px 0; font-size: 13px; }
     .alert-item:last-child { border-bottom: none; }
-    .footer { text-align: center; color: #334155; font-size: 12px; margin-top: 40px; }
+    .footer { text-align: center; color: #555; font-size: 12px; margin-top: 40px; }
     .green { color: #00C896; } .amber { color: #F5A623; } .red { color: #FF3A5C; }
   </style>
 </head>
@@ -188,8 +188,8 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     return (
-      <div className="bg-[#0B1628] border border-[#1A2E4A] rounded-lg px-3 py-2 text-xs shadow-xl">
-        <p className="text-[#64748B] mb-1">{label}</p>
+      <div className="bg-black border border-neutral-800 rounded-none px-3 py-2 text-xs shadow-xl">
+        <p className="text-neutral-500 mb-1">{label}</p>
         {payload.map(p => (
           <p key={p.name} style={{ color: p.color }} className="font-medium">
             {p.name}: {p.value}
@@ -208,20 +208,20 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
           {/* Score block */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-2">
-              <p className="text-[10px] text-[#475569] font-medium uppercase tracking-widest">
+              <p className="text-[10px] text-neutral-500 font-medium uppercase tracking-widest">
                 {selectedCommunity.name} &mdash; {selectedCommunity.state}
               </p>
-              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-semibold border ${
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[9px] font-semibold border ${
                 connected
-                  ? 'text-[#00C896] border-[#00C896]/25 bg-[#00C896]/06'
-                  : 'text-[#475569] border-[#1A2E4A]'
+                  ? 'text-[#00C896] border-emerald-500/30 bg-emerald-950'
+                  : 'text-neutral-500 border-neutral-800'
               }`}>
                 {connected ? <Wifi size={8} strokeWidth={2.5} /> : <WifiOff size={8} strokeWidth={2.5} />}
                 {connected ? 'LIVE' : 'SIMULATED'}
               </span>
               <button
                 onClick={exportReport}
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-medium border border-[#1A2E4A] text-[#475569] hover:text-[#94A3B8] hover:border-[#334155] transition-colors"
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-none text-[9px] font-medium border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors"
               >
                 <Download size={9} strokeWidth={2} />
                 Export
@@ -231,7 +231,7 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
               <span className="text-5xl sm:text-6xl font-black text-white leading-none">{comp}</span>
               <div className="pb-1">
                 <span className={`${compCls} text-[10px]`}>{compStatus}</span>
-                <p className="text-[10px] text-[#475569] mt-1 uppercase tracking-wide">Community Risk Index</p>
+                <p className="text-[10px] text-neutral-500 mt-1 uppercase tracking-wide">Community Risk Index</p>
               </div>
             </div>
           </div>
@@ -257,21 +257,21 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
       <div className="card mb-3 sm:mb-4" data-tour="chart">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs sm:text-sm font-semibold text-white">Risk Score Timeline — 24h</span>
-          <div className="flex items-center gap-3 text-[9px] sm:text-[10px] text-[#475569]">
+          <div className="flex items-center gap-3 text-[9px] sm:text-[10px] text-neutral-500">
             <span className="flex items-center gap-1.5"><span className="w-3 h-px bg-[#00C896] inline-block" />Composite</span>
-            <span className="hidden sm:flex items-center gap-1.5"><span className="w-3 h-px bg-[#F5A623] inline-block" />Agriculture</span>
-            <span className="hidden sm:flex items-center gap-1.5"><span className="w-3 h-px bg-[#3B82F6] inline-block" />Health</span>
+            <span className="hidden sm:flex items-center gap-1.5"><span className="w-3 h-px bg-[#FFFFFF] inline-block" />Agriculture</span>
+            <span className="hidden sm:flex items-center gap-1.5"><span className="w-3 h-px bg-[#666666] inline-block" />Health</span>
           </div>
         </div>
         <ResponsiveContainer width="100%" height={120}>
           <LineChart data={history} margin={{ top: 2, right: 2, bottom: 0, left: -24 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1A2E4A" />
-            <XAxis dataKey="time" tick={{ fontSize: 8, fill: '#334155' }} interval={5} />
-            <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: '#334155' }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#222222" />
+            <XAxis dataKey="time" tick={{ fontSize: 8, fill: '#666' }} interval={5} />
+            <YAxis domain={[0, 100]} tick={{ fontSize: 8, fill: '#666' }} />
             <Tooltip content={<CustomTooltip />} />
             <Line type="monotone" dataKey="composite"   stroke="#00C896" strokeWidth={2}   dot={false} name="Composite"   />
-            <Line type="monotone" dataKey="agriculture" stroke="#F5A623" strokeWidth={1.5} dot={false} name="Agriculture" strokeDasharray="4 2" />
-            <Line type="monotone" dataKey="health"      stroke="#3B82F6" strokeWidth={1.5} dot={false} name="Health"      strokeDasharray="4 2" />
+            <Line type="monotone" dataKey="agriculture" stroke="#FFFFFF" strokeWidth={1} dot={false} name="Agriculture" strokeDasharray="4 2" />
+            <Line type="monotone" dataKey="health"      stroke="#666666" strokeWidth={1} dot={false} name="Health"      strokeDasharray="4 2" />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -298,8 +298,8 @@ export default function Dashboard({ selectedCommunity: propCommunity, setSelecte
 
 function QuickStat({ icon, label, value }) {
   return (
-    <div className="bg-[#0D1E35] border border-[#1A2E4A] rounded-lg px-3 py-2">
-      <div className="flex items-center gap-1 text-[#64748B] mb-1">
+    <div className="bg-black border border-neutral-800 rounded-none px-3 py-2">
+      <div className="flex items-center gap-1 text-neutral-500 mb-1">
         {icon}
         <span className="text-[10px] uppercase tracking-wide font-medium">{label}</span>
       </div>

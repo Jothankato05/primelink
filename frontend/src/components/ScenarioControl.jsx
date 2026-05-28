@@ -99,32 +99,32 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
           <div className="relative">
             <button
               onClick={() => setPickerOpen(o => !o)}
-              className="flex items-center gap-1.5 px-3 py-2.5 rounded-lg text-xs font-medium text-[#94A3B8] bg-[#0B1628] border border-[#1A2E4A] hover:border-[#334155] transition-colors"
+              className="flex items-center gap-1.5 px-3 py-2.5 rounded-none text-xs font-medium text-neutral-400 bg-black border border-neutral-800 hover:border-[#00C896] hover:text-white transition-colors"
             >
               Scenario
               <ChevronDown size={11} className={`transition-transform ${pickerOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {pickerOpen && (
-              <div className="absolute bottom-full mb-2 right-0 w-72 bg-[#0B1628] border border-[#1A2E4A] rounded-xl shadow-2xl shadow-black/60 overflow-hidden animate-fade-in">
+              <div className="absolute bottom-full mb-2 right-0 w-72 bg-black border border-neutral-800 shadow-2xl shadow-black/80 animate-fade-in text-left">
                 {SCENARIOS.map(s => {
                   const SI = s.Icon;
                   return (
                     <button
                       key={s.id}
                       onClick={() => switchScenario(s.id)}
-                      className={`w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-[#0D1E35] transition-colors ${s.id === selectedId ? 'border-l-2' : 'border-l-2 border-l-transparent'}`}
-                      style={s.id === selectedId ? { borderLeftColor: s.accentColor } : {}}
+                      className={`w-full flex items-start gap-3 px-4 py-3 text-left hover:bg-neutral-900 transition-colors ${s.id === selectedId ? 'border-l-2' : 'border-l-2 border-l-transparent'}`}
+                      style={s.id === selectedId ? { borderLeftColor: '#00C896' } : {}}
                     >
                       <div
-                        className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
-                        style={{ background: `${s.accentColor}12`, border: `1px solid ${s.accentColor}25` }}
+                        className="w-7 h-7 rounded-none flex items-center justify-center shrink-0 mt-0.5 border"
+                        style={s.id === selectedId ? { borderColor: '#00C896', background: 'rgba(0,200,150,0.1)' } : { borderColor: '#262626', background: '#000' }}
                       >
-                        <SI size={13} style={{ color: s.accentColor }} strokeWidth={2} />
+                        <SI size={13} style={{ color: s.id === selectedId ? '#00C896' : '#525252' }} strokeWidth={2} />
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-white">{s.label}</p>
-                        <p className="text-[10px] text-[#64748B] leading-relaxed mt-0.5">{s.description}</p>
+                        <p className={`text-xs font-semibold ${s.id === selectedId ? 'text-white' : 'text-neutral-400'}`}>{s.label}</p>
+                        <p className="text-[10px] text-neutral-500 leading-relaxed mt-0.5">{s.description}</p>
                       </div>
                     </button>
                   );
@@ -136,10 +136,9 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
           {/* Run button */}
           <button
             onClick={startScenario}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold text-xs text-white transition-all hover:opacity-90 active:scale-95"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-none font-semibold text-xs text-black transition-all hover:opacity-90 active:scale-95"
             style={{
-              background:  accentColor,
-              boxShadow:   `0 4px 20px ${accentColor}35`,
+              background:  '#00C896',
             }}
           >
             <Icon size={13} strokeWidth={2.5} />
@@ -151,22 +150,22 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
       {/* Scenario panel */}
       {panelOpen && (
         <div className="fixed bottom-0 left-0 right-0 z-50 animate-slide-up">
-          <div className="bg-[#080F1D] border-t border-[#1A2E4A] max-h-[56vh] flex flex-col">
+          <div className="bg-black border-t border-neutral-800 max-h-[56vh] flex flex-col">
 
             {/* Header */}
-            <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-[#1A2E4A]">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-neutral-800">
               <div className="flex items-center gap-3 min-w-0">
                 <div
-                  className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-                  style={{ background: `${accentColor}12`, border: `1px solid ${accentColor}25` }}
+                  className="w-7 h-7 rounded-none flex items-center justify-center shrink-0"
+                  style={{ background: `rgba(0,200,150,0.1)`, border: `1px solid rgba(0,200,150,0.2)` }}
                 >
-                  <Icon size={13} style={{ color: accentColor }} strokeWidth={2} />
+                  <Icon size={13} style={{ color: '#00C896' }} strokeWidth={2} />
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-white truncate">
                     {scenario.community} — {scenario.label}
                   </p>
-                  <p className="text-[10px] text-[#475569]">
+                  <p className="text-[10px] text-neutral-500">
                     {completed
                       ? 'Response complete — early intervention succeeded'
                       : isRunning
@@ -184,7 +183,7 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
                     <button
                       key={s.id}
                       onClick={() => switchScenario(s.id)}
-                      className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-md border border-[#1A2E4A] text-[10px] text-[#64748B] hover:text-white hover:border-[#334155] transition-colors"
+                      className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-none border border-neutral-800 text-[10px] text-neutral-500 hover:text-white hover:border-neutral-600 transition-colors"
                     >
                       <SI size={10} strokeWidth={2} />
                       {s.label}
@@ -195,8 +194,8 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
                 {!isRunning && (
                   <button
                     onClick={startScenario}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-opacity hover:opacity-80"
-                    style={{ background: accentColor }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-none text-xs font-semibold text-black transition-opacity hover:opacity-80"
+                    style={{ background: '#00C896' }}
                   >
                     <Play size={11} strokeWidth={2.5} />
                     {completed ? 'Replay' : 'Start'}
@@ -206,7 +205,7 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
                 {completed && (
                   <button
                     onClick={resetScenario}
-                    className="px-3 py-1.5 rounded-lg bg-[#0D1E35] border border-[#1A2E4A] text-[#94A3B8] text-xs font-medium hover:bg-[#1A2E4A] transition-colors"
+                    className="px-3 py-1.5 rounded-none bg-neutral-900 border border-neutral-800 text-neutral-300 text-xs font-medium hover:bg-neutral-800 transition-colors"
                   >
                     Reset
                   </button>
@@ -214,20 +213,19 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
 
                 <button
                   onClick={() => { setPanelOpen(false); if (!isRunning) resetScenario(); }}
-                  className="p-1.5 rounded-lg hover:bg-[#1A2E4A] transition-colors"
+                  className="p-1.5 rounded-none hover:bg-neutral-900 transition-colors"
                 >
-                  <X size={15} className="text-[#475569]" />
+                  <X size={15} className="text-neutral-500" />
                 </button>
               </div>
             </div>
 
             {/* Progress bar */}
-            <div className="h-0.5 bg-[#1A2E4A]">
+            <div className="h-0.5 bg-neutral-900 border-b border-neutral-800">
               <div
-                className="h-full transition-all duration-700"
+                className="h-full transition-all duration-700 bg-[#00C896]"
                 style={{
-                  width:      `${progress}%`,
-                  background: completed ? '#00C896' : accentColor,
+                  width: `${progress}%`
                 }}
               />
             </div>
@@ -245,7 +243,7 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
                 return (
                   <div
                     key={step.id}
-                    className={`flex items-start gap-3 px-3 py-2 rounded-lg transition-all duration-400 ${active ? 'bg-[#0D1E35]' : ''} ${pending ? 'opacity-25' : done ? 'opacity-60' : ''}`}
+                    className={`flex items-start gap-3 px-3 py-2 rounded-none transition-all duration-400 ${active ? 'bg-neutral-900 border-l-2 border-[#00C896]' : 'border-l-2 border-transparent'} ${pending ? 'opacity-25' : done ? 'opacity-60' : ''}`}
                   >
                     <StepIcon
                       size={13}
@@ -262,7 +260,7 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
                           {Object.entries(step.scores).map(([sec, val]) => (
                             <span
                               key={sec}
-                              className="text-[9px] font-medium px-1.5 py-0.5 rounded bg-[#080F1D] border border-[#1A2E4A]"
+                              className="text-[9px] font-medium px-1.5 py-0.5 rounded-none bg-black border border-neutral-800"
                               style={{ color: val < 40 ? '#FF3A5C' : val < 65 ? '#F5A623' : '#00C896' }}
                             >
                               {sec} {val}
@@ -278,11 +276,11 @@ export default function ScenarioControl({ onStep, onReset, isRunning, setIsRunni
 
             {/* Resolution callout */}
             {completed && (
-              <div className="px-4 sm:px-6 py-4 border-t border-[#1A2E4A] bg-[#00C896]/[0.04] animate-fade-in">
+              <div className="px-4 sm:px-6 py-4 border-t border-neutral-800 bg-black animate-fade-in">
                 <p className="text-xs font-semibold text-[#00C896] mb-1">
                   Response complete — automated intervention succeeded across 5 sectors
                 </p>
-                <p className="text-[11px] text-[#64748B] leading-relaxed">
+                <p className="text-[11px] text-neutral-500 leading-relaxed">
                   {scenario.resolution}
                 </p>
               </div>

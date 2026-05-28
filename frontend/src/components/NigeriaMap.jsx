@@ -24,21 +24,21 @@ export default function NigeriaMap({ selectedCommunity, onSelectCommunity }) {
     <div className="card-glow">
       <div className="flex items-center justify-between mb-3">
         <span className="text-sm font-semibold text-white">Community Risk Map — Nigeria</span>
-        <div className="flex items-center gap-3 text-[10px] text-[#64748B]">
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#00C896]" />Safe</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#F5A623]" />Moderate</span>
-          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#FF3A5C]" />Critical</span>
+        <div className="flex items-center gap-3 text-[10px] text-neutral-500">
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-none bg-[#00C896]" />Safe</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-none bg-[#F5A623]" />Moderate</span>
+          <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-none bg-[#FF3A5C]" />Critical</span>
         </div>
       </div>
 
       <div className="relative w-full" style={{ paddingBottom: '60%' }}>
         {/* Map background grid */}
-        <div className="absolute inset-0 rounded-xl overflow-hidden bg-[#070F1F] border border-[#1A2E4A]">
+        <div className="absolute inset-0 rounded-none overflow-hidden bg-neutral-950 border border-neutral-800">
           {/* Subtle grid */}
-          <svg className="absolute inset-0 w-full h-full opacity-10">
+          <svg className="absolute inset-0 w-full h-full opacity-30">
             <defs>
               <pattern id="grid" width="10%" height="10%" patternUnits="userSpaceOnUse">
-                <path d="M 0 0 L 0 100 M 0 0 L 100 0" stroke="#1A2E4A" strokeWidth="0.5" fill="none" vectorEffect="non-scaling-stroke" />
+                <path d="M 0 0 L 0 100 M 0 0 L 100 0" stroke="#333333" strokeWidth="0.5" fill="none" vectorEffect="non-scaling-stroke" />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#grid)" />
@@ -48,8 +48,8 @@ export default function NigeriaMap({ selectedCommunity, onSelectCommunity }) {
           <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 60" preserveAspectRatio="none">
             <polygon
               points="8,42 12,52 18,56 28,57 40,55 52,55 60,52 68,50 78,48 88,44 92,36 90,26 84,16 76,10 66,8 56,8 46,10 36,12 26,16 18,22 10,30 8,42"
-              fill="#0A1525"
-              stroke="#1A3055"
+              fill="#050505"
+              stroke="#333333"
               strokeWidth="0.5"
             />
           </svg>
@@ -72,26 +72,27 @@ export default function NigeriaMap({ selectedCommunity, onSelectCommunity }) {
                 {/* Pulse ring for selected */}
                 {isSelected && (
                   <span
-                    className="absolute inset-0 rounded-full animate-ping opacity-60"
+                    className="absolute inset-0 animate-ping opacity-60"
                     style={{ background: color, width: 20, height: 20, margin: '-4px' }}
                   />
                 )}
                 {/* Dot */}
                 <span
-                  className="block rounded-full border-2 transition-all duration-300"
+                  className="block transition-all duration-300"
                   style={{
-                    width: isSelected ? 14 : 10,
-                    height: isSelected ? 14 : 10,
+                    width: isSelected ? 12 : 8,
+                    height: isSelected ? 12 : 8,
                     background: color,
-                    borderColor: isSelected ? 'white' : `${color}80`,
+                    border: isSelected ? '1px solid white' : 'none',
                     boxShadow: `0 0 ${isSelected ? 12 : 6}px ${color}80`,
+                    transform: 'rotate(45deg)',
                   }}
                 />
                 {/* Tooltip */}
                 <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-20 pointer-events-none">
-                  <div className="bg-[#0B1628] border border-[#1A2E4A] rounded-lg px-2 py-1.5 shadow-xl whitespace-nowrap">
+                  <div className="bg-black border border-neutral-800 rounded-none px-2 py-1.5 shadow-xl whitespace-nowrap">
                     <p className="text-xs font-semibold text-white">{c.name}</p>
-                    <p className="text-[10px] text-[#64748B]">{c.state} · Score: <span style={{ color }}>{scores.composite}</span></p>
+                    <p className="text-[10px] text-neutral-500">{c.state} · Score: <span style={{ color }}>{scores.composite}</span></p>
                   </div>
                 </div>
               </button>
@@ -110,9 +111,9 @@ export default function NigeriaMap({ selectedCommunity, onSelectCommunity }) {
             <button
               key={c.id}
               onClick={() => onSelectCommunity(c)}
-              className={`flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium border transition-all ${isSelected ? 'border-[#00C896]/40 bg-[#00C896]/10 text-[#00C896]' : 'border-[#1A2E4A] bg-[#0D1E35] text-[#64748B] hover:text-white'}`}
+              className={`flex items-center gap-1.5 px-2 py-1 rounded-none text-[10px] font-medium border transition-all ${isSelected ? 'border-[#00C896] bg-black text-[#00C896]' : 'border-neutral-800 bg-black text-neutral-500 hover:text-white hover:border-neutral-600'}`}
             >
-              <span className="w-2 h-2 rounded-full" style={{ background: color }} />
+              <span className="w-2 h-2 rounded-none transform rotate-45" style={{ background: color }} />
               {c.name.split(' ')[0]} {c.name.split(' ')[1] || ''}
               <span style={{ color }}>{scores.composite}</span>
             </button>
