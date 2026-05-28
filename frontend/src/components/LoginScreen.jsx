@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Hexagon, Network, ArrowRight, Radio, Globe, BarChart2 } from 'lucide-react';
+import { Hexagon, Network, ArrowRight, Users, Globe, BarChart2 } from 'lucide-react';
 
 const PLATFORM_STATS = [
-  { value: '8',   label: 'Communities',   Icon: Globe    },
-  { value: '127', label: 'IoT Sensors',   Icon: Radio    },
-  { value: '5',   label: 'Risk Sectors',  Icon: BarChart2 },
+  { value: '8',  label: 'Communities',  Icon: Globe    },
+  { value: '5',  label: 'Risk Sectors', Icon: BarChart2 },
+  { value: '24', label: 'Hrs / Update', Icon: Users    },
 ];
 
-const SECTOR_LABELS = ['Health', 'Agriculture', 'Environment', 'Finance', 'IoT'];
+const SECTOR_LABELS = ['Health', 'Agriculture', 'Environment', 'Finance', 'Climate'];
 
 export default function LoginScreen({ onEnter }) {
   const [activeSector, setActiveSector] = useState(0);
@@ -99,8 +99,8 @@ export default function LoginScreen({ onEnter }) {
 
         {/* Description */}
         <p className="text-[#64748B] text-sm leading-relaxed mb-10 max-w-md">
-          Real-time cross-sector intelligence across health, agriculture, environment,
-          finance and IoT enabling proactive intervention before community crises escalate.
+          A community risk score — like a credit score for Nigerian villages — tracking
+          health, agriculture, environment, finance, and climate in one number.
         </p>
 
         {/* Platform stats */}
@@ -144,7 +144,7 @@ export default function LoginScreen({ onEnter }) {
       >
         <span className="w-1.5 h-1.5 rounded-full bg-[#00C896] animate-pulse" />
         <span className="text-[10px] text-[#00C896] font-semibold tracking-wide">SYSTEM ONLINE</span>
-        <span className="text-[10px] text-neutral-400">127 sensors active 8 communities monitored</span>
+        <span className="text-[10px] text-neutral-400">8 communities · 5 sectors · live risk scoring</span>
       </div>
     </div>
   );

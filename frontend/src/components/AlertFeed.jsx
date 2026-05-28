@@ -1,5 +1,5 @@
 import { AlertTriangle, AlertCircle, CheckCircle, Info,
-         Leaf, Wheat, Activity, TrendingUp, Radio } from 'lucide-react';
+         Leaf, Wheat, Activity, TrendingUp, Cloud } from 'lucide-react';
 
 const TYPE_ICONS = {
   red:   AlertTriangle,
@@ -13,7 +13,7 @@ const SECTOR_ICONS = {
   agriculture: Wheat,
   health:      Activity,
   finance:     TrendingUp,
-  iot:         Radio,
+  climate:     Cloud,
 };
 
 const TYPE_STYLES = {

@@ -1,4 +1,4 @@
-import { Leaf, Wheat, Activity, TrendingUp, Radio } from 'lucide-react';
+import { Leaf, Wheat, Activity, TrendingUp, Cloud } from 'lucide-react';
 import { getScoreColor, getScoreLabel } from '../data/mockData';
 
 const SECTOR_ICONS = {
@@ -6,7 +6,7 @@ const SECTOR_ICONS = {
   Wheat:      Wheat,
   Activity:   Activity,
   TrendingUp: TrendingUp,
-  Radio:      Radio,
+  Cloud:      Cloud,
 };
 
 export default function RiskGauge({ sector, score, meta }) {
