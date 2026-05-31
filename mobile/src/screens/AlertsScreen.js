@@ -1,3 +1,5 @@
+// AlertsScreen — citizen-facing alert feed
+// Plain language, no IoT references, actionable messages
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, FlatList,
@@ -7,24 +9,31 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, fonts, radius } from '../theme';
 import { INITIAL_ALERTS } from '../data/communities';
 
-const BACKEND = 'http://localhost:4000';
+const BACKEND = 'http://10.116.65.43:4000';
 
 const TYPE_CONFIG = {
-  red:   { label: 'CRITICAL', dot: colors.red,   bg: 'rgba(255,58,92,0.06)',   border: 'rgba(255,58,92,0.18)'   },
-  amber: { label: 'WARNING',  dot: colors.amber,  bg: 'rgba(245,166,35,0.06)',  border: 'rgba(245,166,35,0.18)'  },
-  green: { label: 'RESOLVED', dot: colors.green,  bg: 'rgba(0,200,150,0.06)',   border: 'rgba(0,200,150,0.18)'   },
-  info:  { label: 'INFO',     dot: colors.blue,   bg: 'rgba(59,130,246,0.06)',  border: 'rgba(59,130,246,0.18)'  },
+  red:   { label: 'CRITICAL', color: colors.red,   bg: 'rgba(255,58,92,0.07)',  border: 'rgba(255,58,92,0.20)'  },
+  amber: { label: 'WARNING',  color: colors.amber,  bg: 'rgba(245,166,35,0.07)', border: 'rgba(245,166,35,0.20)' },
+  green: { label: 'GOOD NEWS',color: colors.green,  bg: 'rgba(0,200,150,0.07)',  border: 'rgba(0,200,150,0.20)'  },
+  info:  { label: 'INFO',     color: '#60A5FA',     bg: 'rgba(59,130,246,0.07)', border: 'rgba(59,130,246,0.18)' },
 };
 
+// Citizen-friendly sector labels — no IoT
 const SECTOR_LABELS = {
-  environment: 'Environment',
-  agriculture: 'Agriculture',
-  health:      'Health',
-  finance:     'Finance',
-  iot:         'IoT Network',
+  health:      '🏥 Health',
+  agriculture: '🌾 Agriculture',
+  environment: '🌿 Environment',
+  finance:     '📈 Finance',
+  climate:     '☁️ Climate',
 };
 
-const FILTER_OPTIONS = ['ALL', 'CRITICAL', 'WARNING', 'INFO', 'RESOLVED'];
+const FILTER_TABS = [
+  { key: 'ALL',      label: 'All' },
+  { key: 'CRITICAL', label: 'Critical' },
+  { key: 'WARNING',  label: 'Warnings' },
+  { key: 'GOOD NEWS',label: 'Good News' },
+  { key: 'INFO',     label: 'Info' },
+];
 
 export default function AlertsScreen() {
   const [alerts,     setAlerts]     = useState(INITIAL_ALERTS);
@@ -36,13 +45,13 @@ export default function AlertsScreen() {
     try {
       const res  = await fetch(`${BACKEND}/api/alerts?limit=50`);
       const data = await res.json();
-      if (data.success && data.data.length > 0) {
+      if (data.success && data.data?.length > 0) {
         setAlerts(data.data);
         setConnected(true);
+        return;
       }
-    } catch {
-      setConnected(false);
-    }
+    } catch {}
+    setConnected(false);
   };
 
   useEffect(() => {
@@ -59,81 +68,77 @@ export default function AlertsScreen() {
 
   const filtered = filter === 'ALL'
     ? alerts
-    : alerts.filter(a => {
-        const cfg = TYPE_CONFIG[a.type];
-        return cfg && cfg.label === filter;
-      });
+    : alerts.filter(a => TYPE_CONFIG[a.type]?.label === filter);
+
+  const counts = Object.fromEntries(
+    Object.entries(TYPE_CONFIG).map(([key, cfg]) => [
+      cfg.label,
+      alerts.filter(a => a.type === key).length,
+    ])
+  );
 
   const renderAlert = ({ item }) => {
-    const cfg     = TYPE_CONFIG[item.type] ?? TYPE_CONFIG.info;
-    const sector  = SECTOR_LABELS[item.sector] ?? item.sector;
+    const cfg    = TYPE_CONFIG[item.type] ?? TYPE_CONFIG.info;
+    const sector = item.sector ? (SECTOR_LABELS[item.sector] ?? item.sector) : null;
+
     return (
-      <View style={[styles.alertRow, { backgroundColor: cfg.bg, borderColor: cfg.border }]}>
-        <View style={styles.alertLeft}>
-          <View style={[styles.alertDot, { backgroundColor: cfg.dot }]} />
-        </View>
-        <View style={styles.alertBody}>
-          <View style={styles.alertMeta}>
-            <Text style={[styles.alertType, { color: cfg.dot }]}>{cfg.label}</Text>
-            {sector ? <Text style={styles.alertSector}>{sector}</Text> : null}
-            <Text style={styles.alertTime}>{item.time}</Text>
+      <View style={[styles.alertCard, { backgroundColor: cfg.bg, borderColor: cfg.border }]}>
+        {/* Type badge + sector + time */}
+        <View style={styles.alertMeta}>
+          <View style={[styles.typePill, { backgroundColor: `${cfg.color}18`, borderColor: `${cfg.color}35` }]}>
+            <View style={[styles.typeDot, { backgroundColor: cfg.color }]} />
+            <Text style={[styles.typeLabel, { color: cfg.color }]}>{cfg.label}</Text>
           </View>
-          <Text style={styles.alertText}>{item.text}</Text>
+          {sector && (
+            <Text style={styles.sectorTag}>{sector}</Text>
+          )}
+          <Text style={styles.alertTime}>{item.time}</Text>
         </View>
+
+        {/* Alert text */}
+        <Text style={styles.alertText}>{item.text}</Text>
       </View>
     );
   };
 
   const renderHeader = () => (
     <>
-      {/* Header */}
-      <View style={styles.header}>
+      {/* Page header */}
+      <View style={styles.pageHeader}>
         <View>
-          <Text style={styles.pageTitle}>Alert Feed</Text>
+          <Text style={styles.pageTitle}>Community Alerts</Text>
           <Text style={styles.pageSubtitle}>
-            {connected ? 'Live · updates every 8s' : 'Simulation · no backend'}
+            What's happening in your communities right now
           </Text>
         </View>
-        <View style={[styles.badge, connected ? styles.badgeLive : styles.badgeSim]}>
-          <View style={[styles.badgeDot, { backgroundColor: connected ? colors.green : colors.textMuted }]} />
-          <Text style={[styles.badgeText, { color: connected ? colors.green : colors.textMuted }]}>
-            {connected ? 'LIVE' : 'SIM'}
-          </Text>
-        </View>
+        {connected && (
+          <View style={styles.livePill}>
+            <View style={styles.liveDot} />
+            <Text style={styles.liveText}>LIVE</Text>
+          </View>
+        )}
       </View>
 
-      {/* Summary strip */}
-      <View style={styles.summaryStrip}>
-        {Object.entries(TYPE_CONFIG).map(([key, cfg]) => {
-          const count = alerts.filter(a => a.type === key).length;
-          return (
-            <View key={key} style={styles.summaryStat}>
-              <Text style={[styles.summaryCount, { color: cfg.dot }]}>{count}</Text>
-              <Text style={styles.summaryLabel}>{cfg.label}</Text>
-            </View>
-          );
-        })}
-      </View>
-
-      {/* Filter bar */}
-      <View style={styles.filterBar}>
-        {FILTER_OPTIONS.map(opt => (
-          <TouchableOpacity
-            key={opt}
-            style={[styles.filterChip, filter === opt && styles.filterChipActive]}
-            onPress={() => setFilter(opt)}
-          >
-            <Text style={[styles.filterChipText, filter === opt && styles.filterChipTextActive]}>
-              {opt}
+      {/* Summary counts */}
+      <View style={styles.summaryRow}>
+        {Object.entries(TYPE_CONFIG).map(([key, cfg]) => (
+          <View key={key} style={styles.summaryItem}>
+            <Text style={[styles.summaryCount, { color: cfg.color }]}>
+              {counts[cfg.label] ?? 0}
             </Text>
-          </TouchableOpacity>
+            <Text style={styles.summaryLabel}>{cfg.label}</Text>
+          </View>
         ))}
       </View>
 
+      {/* Filter tabs */}
+      <ScrollRow filter={filter} setFilter={setFilter} counts={counts} />
+
       {filtered.length === 0 && (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyTitle}>No alerts match this filter</Text>
-          <Text style={styles.emptyBody}>Adjust the filter above to view alert history.</Text>
+          <Text style={styles.emptyIcon}>✓</Text>
+          <Text style={styles.emptyTitle}>No alerts in this category</Text>
+          <Text style={styles.emptyBody}>All clear for "{filter.toLowerCase()}" alerts right now.</Text>
         </View>
       )}
     </>
@@ -152,41 +157,65 @@ export default function AlertsScreen() {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.green} />
         }
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
         ListFooterComponent={<View style={{ height: 32 }} />}
       />
     </SafeAreaView>
   );
 }
 
+function ScrollRow({ filter, setFilter, counts }) {
+  return (
+    <View style={styles.filterRow}>
+      {FILTER_TABS.map(tab => {
+        const count  = tab.key === 'ALL' ? null : counts[tab.key] ?? 0;
+        const active = filter === tab.key;
+        return (
+          <TouchableOpacity
+            key={tab.key}
+            style={[styles.filterTab, active && styles.filterTabActive]}
+            onPress={() => setFilter(tab.key)}
+          >
+            <Text style={[styles.filterTabText, active && styles.filterTabTextActive]}>
+              {tab.label}
+            </Text>
+            {count !== null && count > 0 && (
+              <View style={[styles.filterBadge, active && styles.filterBadgeActive]}>
+                <Text style={[styles.filterBadgeText, active && styles.filterBadgeTextActive]}>
+                  {count}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-
   listContent: { paddingHorizontal: 16, paddingTop: 16 },
 
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-    marginBottom: 16,
+  // ── Page header ───────────────────────────────────────────────────────────
+  pageHeader: {
+    flexDirection: 'row', alignItems: 'flex-start',
+    justifyContent: 'space-between', marginBottom: 16,
   },
-  pageTitle: { fontSize: 22, ...fonts.black, color: colors.textPrimary, letterSpacing: -0.5 },
-  pageSubtitle: { fontSize: 11, color: colors.textMuted, marginTop: 2 },
-  badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 99,
-    borderWidth: 1,
+  pageTitle:   { fontSize: 22, ...fonts.black, color: colors.textPrimary, letterSpacing: -0.5 },
+  pageSubtitle:{ fontSize: 12, color: colors.textMuted, marginTop: 3, lineHeight: 18 },
+  livePill: {
+    flexDirection: 'row', alignItems: 'center', gap: 5,
+    paddingHorizontal: 10, paddingVertical: 5,
+    borderRadius: 99, borderWidth: 1,
+    backgroundColor: 'rgba(0,200,150,0.08)',
+    borderColor: 'rgba(0,200,150,0.22)',
   },
-  badgeLive: { backgroundColor: 'rgba(0,200,150,0.08)', borderColor: 'rgba(0,200,150,0.2)' },
-  badgeSim:  { backgroundColor: 'rgba(30,50,80,0.6)',   borderColor: colors.border },
-  badgeDot:  { width: 5, height: 5, borderRadius: 3 },
-  badgeText: { fontSize: 10, ...fonts.semibold, letterSpacing: 0.5 },
+  liveDot: { width: 5, height: 5, borderRadius: 3, backgroundColor: colors.green },
+  liveText: { fontSize: 9, ...fonts.semibold, color: colors.green, letterSpacing: 0.5 },
 
-  summaryStrip: {
+  // ── Summary ───────────────────────────────────────────────────────────────
+  summaryRow: {
     flexDirection: 'row',
     backgroundColor: colors.card,
     borderRadius: radius.md,
@@ -195,84 +224,69 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingVertical: 12,
   },
-  summaryStat: {
-    flex: 1,
-    alignItems: 'center',
-    borderRightWidth: 1,
-    borderRightColor: colors.border,
+  summaryItem: {
+    flex: 1, alignItems: 'center',
+    borderRightWidth: 1, borderRightColor: colors.border,
   },
-  summaryCount: { fontSize: 20, ...fonts.black },
+  summaryCount: { fontSize: 22, ...fonts.black },
   summaryLabel: {
-    fontSize: 8,
-    ...fonts.semibold,
-    color: colors.textMuted,
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
-    marginTop: 2,
+    fontSize: 7, ...fonts.semibold, color: colors.textMuted,
+    textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 2,
   },
 
-  filterBar: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
-    marginBottom: 16,
+  // ── Filter tabs ───────────────────────────────────────────────────────────
+  filterRow: {
+    flexDirection: 'row', flexWrap: 'wrap',
+    gap: 6, marginBottom: 16,
   },
-  filterChip: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 99,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
+  filterTab: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingHorizontal: 11, paddingVertical: 6,
+    borderRadius: 99, borderWidth: 1,
+    borderColor: colors.border, backgroundColor: colors.card,
   },
-  filterChipActive: {
+  filterTabActive: {
     borderColor: colors.green,
-    backgroundColor: 'rgba(0,200,150,0.08)',
+    backgroundColor: 'rgba(0,200,150,0.09)',
   },
-  filterChipText: {
-    fontSize: 9,
-    ...fonts.semibold,
-    color: colors.textMuted,
-    letterSpacing: 0.5,
+  filterTabText: { fontSize: 10, ...fonts.medium, color: colors.textMuted },
+  filterTabTextActive: { color: colors.green, ...fonts.semibold },
+  filterBadge: {
+    minWidth: 16, height: 16, borderRadius: 8,
+    backgroundColor: colors.border, alignItems: 'center', justifyContent: 'center',
+    paddingHorizontal: 4,
   },
-  filterChipTextActive: { color: colors.green },
+  filterBadgeActive:     { backgroundColor: 'rgba(0,200,150,0.2)' },
+  filterBadgeText:       { fontSize: 9, ...fonts.bold, color: colors.textMuted },
+  filterBadgeTextActive: { color: colors.green },
 
-  alertRow: {
-    flexDirection: 'row',
-    borderRadius: radius.md,
-    borderWidth: 1,
-    padding: 12,
-    gap: 10,
+  // ── Alert cards ───────────────────────────────────────────────────────────
+  alertCard: {
+    borderRadius: radius.md, borderWidth: 1,
+    padding: 14,
   },
-  alertLeft: { paddingTop: 4 },
-  alertDot: { width: 6, height: 6, borderRadius: 3 },
-  alertBody: { flex: 1 },
   alertMeta: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: 4,
-    flexWrap: 'wrap',
+    flexDirection: 'row', alignItems: 'center',
+    gap: 6, marginBottom: 8, flexWrap: 'wrap',
   },
-  alertType: { fontSize: 9, ...fonts.bold, letterSpacing: 0.5 },
-  alertSector: {
-    fontSize: 9,
-    ...fonts.medium,
-    color: colors.textMuted,
-    backgroundColor: 'rgba(26,46,74,0.8)',
-    paddingHorizontal: 5,
-    paddingVertical: 1,
-    borderRadius: 3,
+  typePill: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingHorizontal: 8, paddingVertical: 3,
+    borderRadius: 99, borderWidth: 1,
+  },
+  typeDot:    { width: 5, height: 5, borderRadius: 3 },
+  typeLabel:  { fontSize: 9, ...fonts.bold, letterSpacing: 0.4 },
+  sectorTag: {
+    fontSize: 10, ...fonts.medium, color: colors.textMuted,
+    backgroundColor: 'rgba(26,46,74,0.9)',
+    paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4,
   },
   alertTime: { fontSize: 9, color: colors.textMuted, marginLeft: 'auto' },
-  alertText: { fontSize: 12, color: colors.textSecondary, lineHeight: 18 },
+  alertText: { fontSize: 13, color: colors.textSecondary, lineHeight: 20 },
 
-  separator: { height: 6 },
-
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 48,
-  },
-  emptyTitle: { fontSize: 14, ...fonts.semibold, color: colors.textSecondary, marginBottom: 6 },
+  // ── Empty state ───────────────────────────────────────────────────────────
+  emptyState: { alignItems: 'center', paddingVertical: 52 },
+  emptyIcon:  { fontSize: 32, marginBottom: 12 },
+  emptyTitle: { fontSize: 15, ...fonts.semibold, color: colors.textSecondary, marginBottom: 6 },
   emptyBody:  { fontSize: 12, color: colors.textMuted, textAlign: 'center' },
 });

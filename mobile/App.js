@@ -4,27 +4,28 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colors, fonts } from './src/theme';
-import SplashScreen   from './src/screens/SplashScreen';
-import DashboardScreen from './src/screens/DashboardScreen';
-import AlertsScreen    from './src/screens/AlertsScreen';
+import SplashScreen from './src/screens/SplashScreen';
+import HomeScreen   from './src/screens/HomeScreen';
+import AlertsScreen from './src/screens/AlertsScreen';
 
 const Tab = createBottomTabNavigator();
 
+const TAB_ICONS = {
+  'My Community': '◈',
+  'Alerts':       '◎',
+};
+
 function TabIcon({ label, focused }) {
-  const indicators = {
-    Dashboard: '▣',
-    Alerts:    '◎',
-  };
   return (
-    <View style={[tabStyles.icon, focused && tabStyles.iconFocused]}>
-      <Text style={[tabStyles.glyph, { color: focused ? colors.green : colors.textMuted }]}>
-        {indicators[label] ?? '●'}
+    <View style={[tabStyles.iconWrap, focused && tabStyles.iconWrapFocused]}>
+      <Text style={[tabStyles.iconGlyph, { color: focused ? colors.green : colors.textMuted }]}>
+        {TAB_ICONS[label] ?? '●'}
       </Text>
     </View>
   );
 }
 
-function MainNavigator() {
+function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -35,12 +36,12 @@ function MainNavigator() {
             {route.name}
           </Text>
         ),
-        tabBarStyle: tabStyles.bar,
+        tabBarStyle:     tabStyles.bar,
         tabBarItemStyle: tabStyles.item,
       })}
     >
-      <Tab.Screen name="Dashboard" component={DashboardScreen} />
-      <Tab.Screen name="Alerts"    component={AlertsScreen}    />
+      <Tab.Screen name="My Community" component={HomeScreen}   />
+      <Tab.Screen name="Alerts"       component={AlertsScreen} />
     </Tab.Navigator>
   );
 }
@@ -59,7 +60,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <MainNavigator />
+        <MainTabs />
       </NavigationContainer>
     </SafeAreaProvider>
   );
@@ -70,29 +71,21 @@ const tabStyles = StyleSheet.create({
     backgroundColor: colors.card,
     borderTopWidth: 1,
     borderTopColor: colors.border,
-    height: 60,
-    paddingBottom: 6,
+    height: 62,
+    paddingBottom: 8,
     paddingTop: 6,
   },
-  item: {
-    paddingTop: 2,
-  },
-  icon: {
-    width: 28,
-    height: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
+  item: { paddingTop: 2 },
+  iconWrap: {
+    width: 30, height: 30,
+    alignItems: 'center', justifyContent: 'center',
     borderRadius: 8,
   },
-  iconFocused: {
-    backgroundColor: 'rgba(0,200,150,0.1)',
-  },
-  glyph: {
-    fontSize: 14,
-  },
+  iconWrapFocused: { backgroundColor: 'rgba(0,200,150,0.1)' },
+  iconGlyph: { fontSize: 15 },
   label: {
     fontSize: 10,
     ...fonts.semibold,
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
 });

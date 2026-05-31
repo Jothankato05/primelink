@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Download PrimeLink — Community Risk Intelligence</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: #040C18; color: #F1F5F9;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 32px 20px;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 64px 64px; pointer-events: none; z-index: 0;
+    }
+    .card {
+      position: relative; z-index: 1; background: #0B1628;
+      border: 1px solid #1A2E4A; padding: 48px 40px;
+      max-width: 520px; width: 100%; text-align: center;
+    }
+    .logo-wrap {
+      width: 64px; height: 64px; background: #00C896; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; box-shadow: 0 0 40px rgba(0,200,150,0.35);
+    }
+    .logo-inner {
+      width: 28px; height: 28px; border: 2.5px solid rgba(255,255,255,0.85);
+      border-radius: 6px; display: flex; align-items: center; justify-content: center;
+      transform: rotate(45deg);
+    }
+    .logo-dot { width: 8px; height: 8px; background: white; border-radius: 50%; }
+    h1 { font-size: 36px; font-weight: 900; letter-spacing: -1px; margin-bottom: 6px; }
+    h1 span { color: #00C896; }
+    .tagline { font-size: 10px; font-weight: 600; letter-spacing: 2px; color: #475569; text-transform: uppercase; margin-bottom: 32px; }
+    .qr-block { background: #040C18; border: 1px solid #1A2E4A; padding: 20px; display: inline-block; margin-bottom: 16px; }
+    .qr-block img { display: block; width: 200px; height: 200px; }
+    .qr-hint { font-size: 12px; color: #64748B; margin-bottom: 24px; line-height: 1.7; }
+    .qr-hint strong { color: #94A3B8; }
+    .btn-download {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #00C896; color: white; font-size: 15px; font-weight: 600;
+      padding: 14px 32px; text-decoration: none;
+      box-shadow: 0 0 28px rgba(0,200,150,0.28); margin-bottom: 10px;
+    }
+    .btn-download:hover { opacity: 0.88; }
+    .file-meta { font-size: 11px; color: #475569; margin-bottom: 28px; }
+    .divider { border: none; border-top: 1px solid #1A2E4A; margin: 24px 0; }
+    .steps-title { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; color: #475569; text-transform: uppercase; margin-bottom: 14px; }
+    .steps { text-align: left; display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .step { display: flex; align-items: flex-start; gap: 12px; }
+    .step-num {
+      width: 22px; height: 22px; flex-shrink: 0;
+      background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.25);
+      color: #00C896; font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; margin-top: 2px;
+    }
+    .step-text { font-size: 13px; color: #94A3B8; line-height: 1.65; }
+    .step-text strong { color: #F1F5F9; }
+    .sectors { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
+    .sector-pill {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(0,200,150,0.06); border: 1px solid rgba(0,200,150,0.15);
+      padding: 5px 12px; font-size: 11px; color: #00C896; font-weight: 600;
+    }
+    .footer { font-size: 10px; color: #334155; letter-spacing: 0.8px; line-height: 2; }
+    .footer a { color: #475569; text-decoration: none; }
+    .footer a:hover { color: #94A3B8; }
+    @media (max-width: 480px) { .card { padding: 28px 18px; } h1 { font-size: 28px; } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo-wrap"><div class="logo-inner"><div class="logo-dot"></div></div></div>
+    <h1>Prime<span>Link</span></h1>
+    <p class="tagline">Community Risk Intelligence Network</p>
+
+    <div class="qr-block">
+      <img src="data:image/png;base64,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" alt="QR code — scan to download PrimeLink" />
+    </div>
+    <p class="qr-hint"><strong>Scan with your Android camera</strong><br>to download PrimeLink directly to your phone.</p>
+
+    <a class="btn-download"
+       href="https://github.com/Jothankato05/primelink/releases/download/v1.0.0/PrimeLink-v1.0-android.apk">
+      &#8595; &nbsp;Download for Android
+    </a>
+    <p class="file-meta">PrimeLink-v1.0-android.apk &nbsp;&middot;&nbsp; 135 MB &nbsp;&middot;&nbsp; Android 8.0+</p>
+
+    <hr class="divider" />
+
+    <p class="steps-title">How to Install</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Download the APK above or scan the QR code on your Android phone.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Go to <strong>Settings &rarr; Apps &rarr; Install unknown apps</strong> and allow installs from your browser or file manager.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Open the downloaded file from your <strong>Downloads</strong> folder and tap <strong>Install</strong>.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Launch <strong>PrimeLink</strong> from your app drawer, select your community, and check your risk score.</div></div>
+    </div>
+
+    <hr class="divider" />
+
+    <p class="steps-title">Sectors Covered</p>
+    <div class="sectors">
+      <div class="sector-pill">&#x1F3E5; Health</div>
+      <div class="sector-pill">&#x1F33E; Agriculture</div>
+      <div class="sector-pill">&#x1F33F; Environment</div>
+      <div class="sector-pill">&#x1F4C8; Finance</div>
+      <div class="sector-pill">&#x2601;&#xFE0F; Climate</div>
+    </div>
+
+    <hr class="divider" />
+
+    <p class="footer">
+      Primers Corporation &middot; Nigeria &middot; 2026<br>
+      <a href="https://jothankato05.github.io/primelink/">Web Dashboard</a>
+      &nbsp;&middot;&nbsp;
+      <a href="https://github.com/Jothankato05/primelink/releases">All Releases</a>
+    </p>
+  </div>
+</body>
+</html>
