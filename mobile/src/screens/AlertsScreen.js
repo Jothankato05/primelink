@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, fonts, radius } from '../theme';
 import { INITIAL_ALERTS } from '../data/communities';
 
-const BACKEND = 'http://10.116.65.43:4000';
+const BACKEND = 'https://primelink-backend.onrender.com';
 
 const TYPE_CONFIG = {
   red:   { label: 'CRITICAL', color: colors.red,   bg: 'rgba(255,58,92,0.07)',  border: 'rgba(255,58,92,0.20)'  },

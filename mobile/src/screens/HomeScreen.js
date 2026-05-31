@@ -12,7 +12,7 @@ import {
   compositeScore, scoreColor, scoreLabel, sectorMessage,
 } from '../data/communities';
 
-const BACKEND = 'http://10.116.65.43:4000';
+const BACKEND = 'https://primelink-backend.onrender.com';
 
 export default function HomeScreen({ navigation }) {
   const [community,  setCommunity]  = useState(COMMUNITIES[0]);
