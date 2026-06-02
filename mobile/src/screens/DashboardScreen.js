@@ -10,7 +10,7 @@ import {
   compositeScore, scoreColor, scoreLabel,
 } from '../data/communities';
 
-const BACKEND = 'http://localhost:4000';
+const BACKEND = 'http://10.116.65.43:4000';
 
 export default function DashboardScreen({ navigation }) {
   const [community,   setCommunity]   = useState(COMMUNITIES[0]);

@@ -5,7 +5,8 @@ import LoginScreen from './components/LoginScreen';
 import { initialAlerts } from './data/mockData';
 
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const demo = new URLSearchParams(window.location.search).has('demo');
+  const [loggedIn, setLoggedIn] = useState(demo);
 
   if (!loggedIn) {
     return <LoginScreen onEnter={() => setLoggedIn(true)} />;
