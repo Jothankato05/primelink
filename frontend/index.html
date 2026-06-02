@@ -44,6 +44,11 @@
         .status-critical { background: rgba(255, 0, 0, 0.3); color: #ff6666; }
         .status-warning { background: rgba(255, 165, 0, 0.3); color: #ffb366; }
         .status-good { background: rgba(0, 255, 100, 0.3); color: #66ff99; }
+        .alerts { margin-top: 40px; padding: 20px; background: rgba(0, 212, 255, 0.05); border: 2px solid #00d4ff; border-radius: 8px; }
+        .alerts h2 { color: #00d4ff; margin-bottom: 15px; }
+        .alert { background: rgba(0, 0, 0, 0.3); padding: 10px; margin: 8px 0; border-radius: 4px; border-left: 3px solid #ffb347; }
+        .alert-critical { border-left-color: #ff4444; }
+        .alert-info { border-left-color: #00d4ff; }
     </style>
 </head>
 <body>
@@ -54,8 +59,14 @@
             <p style="color: #888;">Predicting failures 2-3 weeks in advance</p>
         </header>
         <div id="grid" class="grid"></div>
+        <div class="alerts" id="alerts" style="display:none;">
+            <h2>Recent Alerts</h2>
+            <div id="alertList"></div>
+        </div>
     </div>
     <script>
+        const BACKEND_URL = 'https://primelink-backend.onrender.com';
+        
         const data = [
             { name: 'Kano North', state: 'Kano', pop: 285000, base: 72 },
             { name: 'Ibadan Central', state: 'Oyo', pop: 320000, base: 78 },
@@ -66,6 +77,7 @@
             { name: 'Port Harcourt', state: 'Rivers', pop: 280000, base: 68 },
             { name: 'Abuja Municipal', state: 'FCT', pop: 410000, base: 82 }
         ];
+        
         function render() {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
@@ -80,8 +92,31 @@
                 grid.appendChild(card);
             });
         }
+        
+        async function loadAlerts() {
+            try {
+                const res = await fetch(BACKEND_URL + '/api/alerts?limit=5');
+                if (res.ok) {
+                    const alerts = await res.json();
+                    const alertList = document.getElementById('alertList');
+                    alertList.innerHTML = '';
+                    alerts.forEach(a => {
+                        const div = document.createElement('div');
+                        div.className = 'alert ' + (a.type === 'CRITICAL' ? 'alert-critical' : 'alert-info');
+                        div.innerHTML = `<strong>${a.community}</strong> - ${a.message}`;
+                        alertList.appendChild(div);
+                    });
+                    document.getElementById('alerts').style.display = 'block';
+                }
+            } catch(e) {
+                console.log('Backend offline - showing local data');
+            }
+        }
+        
         render();
+        loadAlerts();
         setInterval(render, 5000);
+        setInterval(loadAlerts, 10000);
     </script>
 </body>
 </html>
