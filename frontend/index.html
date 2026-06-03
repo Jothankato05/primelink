@@ -185,23 +185,109 @@
             background: rgba(0, 212, 255, 0.3);
             border-radius: 2px;
         }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+        }
+        .login-box {
+            width: 90%;
+            max-width: 300px;
+            padding: 30px;
+            background: rgba(0, 212, 255, 0.08);
+            border: 1px solid #00d4ff;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .login-input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .login-input::placeholder {
+            color: #666;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background: #00d4ff;
+            color: #0f0f1e;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .login-btn:active {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>PrimeLink</h1>
-        <p>Offline Simulation - No Backend</p>
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h1 style="color: #00d4ff; font-size: 1.8em; margin-bottom: 10px;">PrimeLink</h1>
+            <p style="color: #888; font-size: 0.8em; margin-bottom: 20px;">Community Risk Intelligence</p>
+
+            <input type="text" id="username" placeholder="Username" class="login-input">
+            <input type="password" id="password" placeholder="Password" class="login-input">
+
+            <button onclick="login()" class="login-btn">Login</button>
+            <p style="color: #888; font-size: 0.7em; margin-top: 15px; text-align: center;">Demo: username • password</p>
+        </div>
     </div>
 
-    <div class="content">
-        <div class="community-selector" id="communityButtons"></div>
-        <div class="dashboard" id="dashboard"></div>
-        <div class="info-bar">
-            ⚡ Live simulation • Updates every 2 seconds • 100% Offline
+    <div id="appScreen" style="display: none; height: 100%; display: flex; flex-direction: column;">
+        <div class="header">
+            <h1>PrimeLink</h1>
+            <p>Offline Simulation - No Backend</p>
+        </div>
+
+        <div class="content">
+            <div class="community-selector" id="communityButtons"></div>
+            <div class="dashboard" id="dashboard"></div>
+            <div class="info-bar">
+                ⚡ Live simulation • Updates every 2 seconds • 100% Offline
+            </div>
         </div>
     </div>
 
     <script>
+        // ============ LOGIN ============
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'demo' && password === 'primelink') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appScreen').style.display = 'flex';
+                startApp();
+            } else {
+                alert('Invalid credentials\n\nUse:\nUsername: demo\nPassword: primelink');
+            }
+        }
+
+        // Allow Enter key to login
+        document.addEventListener('DOMContentLoaded', () => {
+            const passwordInput = document.getElementById('password');
+            if (passwordInput) {
+                passwordInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') login();
+                });
+            }
+        });
+
         // ============ DATA ============
         const COMMUNITIES = [
             { name: 'Kano North', state: 'Kano', pop: 285000, climate: 65, ag: 60, fin: 55, health: 70, infra: 65 },
@@ -409,10 +495,17 @@
         }
 
         // ============ START ============
-        initCommunityData();
-        renderButtons();
-        renderDashboard();
-        setInterval(update, 2000);
+        function startApp() {
+            initCommunityData();
+            renderButtons();
+            renderDashboard();
+            setInterval(update, 2000);
+        }
+
+        // Auto-focus username on load
+        window.addEventListener('load', () => {
+            document.getElementById('username').focus();
+        });
     </script>
 </body>
 </html>
