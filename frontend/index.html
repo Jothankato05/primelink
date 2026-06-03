@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0f0f1e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>PrimeLink Offline</title>
+    <title>PrimeLink Platform</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; }
+        html, body { width: 100%; height: 100%; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #0f0f1e;
@@ -21,178 +19,186 @@
 
         .header {
             padding: 10px;
-            text-align: center;
+            background: rgba(0, 212, 255, 0.08);
             border-bottom: 1px solid #00d4ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             flex-shrink: 0;
         }
         .header h1 {
-            font-size: 1.1em;
+            font-size: 1em;
             color: #00d4ff;
-            margin: 0;
         }
-        .header p {
-            font-size: 0.65em;
+        .logout-btn {
+            padding: 4px 8px;
+            background: rgba(255, 100, 100, 0.2);
+            color: #ff6666;
+            border: 1px solid #ff6666;
+            border-radius: 3px;
+            font-size: 0.7em;
+            cursor: pointer;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 2px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            overflow-x: auto;
+            flex-shrink: 0;
+        }
+        .nav-tab {
+            padding: 6px 12px;
+            background: rgba(0, 212, 255, 0.1);
             color: #888;
-            margin: 2px 0 0 0;
+            border: 1px solid #00d4ff;
+            border-radius: 3px;
+            font-size: 0.7em;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .nav-tab.active {
+            background: #00d4ff;
+            color: #0f0f1e;
+            font-weight: 600;
         }
 
         .content {
             flex: 1;
             overflow-y: auto;
             padding: 10px;
-            display: flex;
-            flex-direction: column;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
 
-        .community-selector {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-        }
-        .community-btn {
-            padding: 8px;
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid #00d4ff;
-            color: #00d4ff;
-            border-radius: 4px;
-            font-size: 0.7em;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .community-btn.active {
-            background: #00d4ff;
-            color: #0f0f1e;
-            font-weight: 700;
-        }
-        .community-btn:active {
-            opacity: 0.8;
-        }
-
-        .dashboard {
-            display: grid;
-            gap: 10px;
-        }
-
-        .score-card {
+        .card {
             background: rgba(0, 212, 255, 0.08);
             border: 1px solid #00d4ff;
             border-radius: 6px;
             padding: 10px;
+            margin-bottom: 10px;
         }
-        .score-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        .card-title {
+            font-size: 0.8em;
+            color: #00d4ff;
+            font-weight: 600;
             margin-bottom: 8px;
         }
-        .score-number {
-            font-size: 2.2em;
+
+        .stat {
+            font-size: 1.6em;
+            color: #00ff64;
             font-weight: bold;
-            color: #00d4ff;
         }
-        .status-badge {
-            padding: 3px 6px;
-            border-radius: 3px;
+
+        .stat-label {
             font-size: 0.65em;
-            font-weight: 600;
-        }
-        .status-excellent { background: rgba(0, 255, 100, 0.3); color: #00ff64; }
-        .status-stable { background: rgba(0, 100, 200, 0.3); color: #00d4ff; }
-        .status-warning { background: rgba(255, 165, 0, 0.3); color: #ffb347; }
-        .status-critical { background: rgba(255, 0, 0, 0.3); color: #ff6666; }
-
-        .sectors {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 4px;
-            margin-top: 8px;
-        }
-        .sector {
-            text-align: center;
-            padding: 6px 4px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 4px;
-            font-size: 0.6em;
-        }
-        .sector-emoji {
-            display: block;
-            font-size: 1.1em;
-            margin-bottom: 2px;
-        }
-        .sector-score {
-            color: #00d4ff;
-            font-weight: 600;
-            display: block;
-        }
-        .sector-label {
-            display: block;
             color: #888;
-            font-size: 0.8em;
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
-        .alerts {
-            margin-top: 5px;
-        }
-        .alerts-title {
-            font-size: 0.7em;
-            color: #00d4ff;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
         .alert-item {
             background: rgba(0, 0, 0, 0.4);
-            padding: 6px;
-            margin-bottom: 4px;
+            padding: 8px;
+            margin-bottom: 6px;
             border-left: 2px solid #ffb347;
             border-radius: 3px;
-            font-size: 0.65em;
-            line-height: 1.2;
+            font-size: 0.7em;
         }
         .alert-critical { border-left-color: #ff4444; }
         .alert-good { border-left-color: #00ff64; }
-        .alert-message {
-            color: #ddd;
-            display: block;
-        }
-        .alert-time {
-            color: #888;
-            font-size: 0.8em;
-            margin-top: 2px;
-            display: block;
+
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
         }
 
-        .info-bar {
-            font-size: 0.65em;
-            color: #888;
+        .community-chip {
+            padding: 8px;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 4px;
             text-align: center;
+            cursor: pointer;
+            font-size: 0.7em;
+        }
+        .community-chip.active {
+            background: #00d4ff;
+            color: #0f0f1e;
+        }
+
+        .sector-bar {
+            margin: 8px 0;
+            font-size: 0.7em;
+        }
+        .sector-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        .bar {
+            background: rgba(0, 212, 255, 0.3);
+            height: 6px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff64, #00d4ff);
+        }
+
+        .trend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7em;
             padding: 6px;
+            margin: 4px 0;
             background: rgba(0, 0, 0, 0.2);
             border-radius: 3px;
-            margin-top: 5px;
         }
 
-        /* Scrollbar */
-        .content::-webkit-scrollbar {
-            width: 4px;
-        }
-        .content::-webkit-scrollbar-track {
-            background: rgba(0, 212, 255, 0.05);
-        }
-        .content::-webkit-scrollbar-thumb {
-            background: rgba(0, 212, 255, 0.3);
-            border-radius: 2px;
+        .resource-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 4px;
+            margin: 8px 0;
+            font-size: 0.7em;
         }
 
-        /* Login Screen */
+        .progress-bar {
+            background: rgba(0, 212, 255, 0.2);
+            height: 20px;
+            border-radius: 3px;
+            margin: 6px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #00d4ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65em;
+            font-weight: 600;
+            color: #0f0f1e;
+        }
+
         .login-screen {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
         }
         .login-box {
             width: 90%;
@@ -213,9 +219,6 @@
             border-radius: 4px;
             font-size: 0.9em;
         }
-        .login-input::placeholder {
-            color: #666;
-        }
         .login-btn {
             width: 100%;
             padding: 10px;
@@ -225,40 +228,241 @@
             border: none;
             border-radius: 4px;
             font-weight: 600;
-            font-size: 0.9em;
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .login-btn:active {
-            opacity: 0.8;
+
+        .content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .content::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 2px;
         }
     </style>
 </head>
 <body>
+    <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1 style="color: #00d4ff; font-size: 1.8em; margin-bottom: 10px;">PrimeLink</h1>
-            <p style="color: #888; font-size: 0.8em; margin-bottom: 20px;">Community Risk Intelligence</p>
-
-            <input type="text" id="username" placeholder="Username" class="login-input">
-            <input type="password" id="password" placeholder="Password" class="login-input">
-
+            <p style="color: #888; font-size: 0.8em; margin-bottom: 20px;">Community Intelligence Platform</p>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
             <button onclick="login()" class="login-btn">Login</button>
-            <p style="color: #888; font-size: 0.7em; margin-top: 15px; text-align: center;">Demo: username • password</p>
+            <p style="color: #888; font-size: 0.7em; margin-top: 15px;">Demo: demo / primelink</p>
         </div>
     </div>
 
+    <!-- APP SCREEN -->
     <div id="appScreen" style="display: none; height: 100%; display: flex; flex-direction: column;">
         <div class="header">
             <h1>PrimeLink</h1>
-            <p>Offline Simulation - No Backend</p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showPage('dashboard')">Dashboard</button>
+            <button class="nav-tab" onclick="showPage('communities')">Communities</button>
+            <button class="nav-tab" onclick="showPage('alerts')">Alerts</button>
+            <button class="nav-tab" onclick="showPage('sectors')">Sectors</button>
+            <button class="nav-tab" onclick="showPage('resources')">Resources</button>
+            <button class="nav-tab" onclick="showPage('insurance')">Insurance</button>
+            <button class="nav-tab" onclick="showPage('analytics')">Analytics</button>
         </div>
 
         <div class="content">
-            <div class="community-selector" id="communityButtons"></div>
-            <div class="dashboard" id="dashboard"></div>
-            <div class="info-bar">
-                ⚡ Live simulation • Updates every 2 seconds • 100% Offline
+            <!-- PAGE: DASHBOARD -->
+            <div id="dashboard" class="page active">
+                <div class="card">
+                    <div class="card-title">🎯 Platform Overview</div>
+                    <div class="grid-2">
+                        <div>
+                            <div class="stat" id="totalCommunities">8</div>
+                            <div class="stat-label">Communities</div>
+                        </div>
+                        <div>
+                            <div class="stat" id="avgRisk">68</div>
+                            <div class="stat-label">Avg Risk Score</div>
+                        </div>
+                        <div>
+                            <div class="stat" id="criticalCount">1</div>
+                            <div class="stat-label">Critical</div>
+                        </div>
+                        <div>
+                            <div class="stat" id="warningCount">3</div>
+                            <div class="stat-label">At Risk</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">⚠️ Critical Alerts (Last 6)</div>
+                    <div id="dashboardAlerts"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🏆 Top Communities</div>
+                    <div id="topCommunities"></div>
+                </div>
+            </div>
+
+            <!-- PAGE: COMMUNITIES -->
+            <div id="communities" class="page">
+                <div class="card">
+                    <div class="card-title">📍 All Communities</div>
+                    <div class="community-grid" id="communityGrid"></div>
+                </div>
+
+                <div class="card" id="selectedCommunityCard" style="display: none;">
+                    <div class="card-title" id="selectedCommunityName"></div>
+                    <div id="selectedCommunityDetails"></div>
+                </div>
+            </div>
+
+            <!-- PAGE: ALERTS -->
+            <div id="alerts" class="page">
+                <div class="card">
+                    <div class="card-title">🔔 All Alerts (24h)</div>
+                    <div id="fullAlertsList"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📊 Alert Statistics</div>
+                    <div style="font-size: 0.8em;">
+                        <div class="trend">
+                            <span>Critical</span>
+                            <span id="criticalAlerts" style="color: #ff6666;">0</span>
+                        </div>
+                        <div class="trend">
+                            <span>Warnings</span>
+                            <span id="warningAlerts" style="color: #ffb347;">0</span>
+                        </div>
+                        <div class="trend">
+                            <span>Good News</span>
+                            <span id="goodAlerts" style="color: #00ff64;">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: SECTORS -->
+            <div id="sectors" class="page">
+                <div class="card">
+                    <div class="card-title">📈 Sector Performance</div>
+                    <div id="sectorAnalysis"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🔗 Cascade Model</div>
+                    <div style="font-size: 0.7em; line-height: 1.6; color: #aaa;">
+                        <strong style="color: #00d4ff;">Climate Impact</strong><br>
+                        ↓ (0.6 weight, 2-week delay)<br>
+                        <strong style="color: #ffb347;">Agriculture Decline</strong><br>
+                        ↓ (0.5 weight, 3-week delay)<br>
+                        <strong style="color: #ff6666;">Finance Crisis</strong><br>
+                        ↓ (0.4 weight, 4-week delay)<br>
+                        <strong style="color: #ff4444;">Health Emergency</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: RESOURCES -->
+            <div id="resources" class="page">
+                <div class="card">
+                    <div class="card-title">🚚 Aid Distribution</div>
+                    <div id="aidDistribution"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">💧 Critical Resources Deployed</div>
+                    <div class="resource-box">
+                        <strong>Medical Supplies:</strong> 4,250 units deployed
+                        <div class="progress-bar"><div class="progress-fill" style="width: 65%;">65%</div></div>
+                    </div>
+                    <div class="resource-box">
+                        <strong>Food Aid:</strong> 890 tons distributed
+                        <div class="progress-bar"><div class="progress-fill" style="width: 78%;">78%</div></div>
+                    </div>
+                    <div class="resource-box">
+                        <strong>Water Systems:</strong> 12 installed
+                        <div class="progress-bar"><div class="progress-fill" style="width: 45%;">45%</div></div>
+                    </div>
+                    <div class="resource-box">
+                        <strong>Clinic Support:</strong> 8 facilities equipped
+                        <div class="progress-bar"><div class="progress-fill" style="width: 82%;">82%</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: INSURANCE -->
+            <div id="insurance" class="page">
+                <div class="card">
+                    <div class="card-title">🛡️ Insurance Payouts (30 days)</div>
+                    <div id="insurancePayouts"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📋 Active Policies</div>
+                    <div style="font-size: 0.7em;">
+                        <div class="trend">
+                            <span>Parametric Insurance</span>
+                            <span>₦12.4M covered</span>
+                        </div>
+                        <div class="trend">
+                            <span>Crop Insurance</span>
+                            <span>₦8.7M claims</span>
+                        </div>
+                        <div class="trend">
+                            <span>Health Insurance</span>
+                            <span>₦3.2M active</span>
+                        </div>
+                        <div class="trend">
+                            <span>Infrastructure Bond</span>
+                            <span>₦5.1M funded</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: ANALYTICS -->
+            <div id="analytics" class="page">
+                <div class="card">
+                    <div class="card-title">📊 Risk Trends (30 days)</div>
+                    <div id="riskTrends"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">🎯 Predictive Alerts (2-3 weeks)</div>
+                    <div style="font-size: 0.7em; color: #ffb347;">
+                        ⚠️ Maiduguri: Drought risk spike predicted in 14 days<br><br>
+                        ⚠️ Kano North: Crop failure cascade in 18 days<br><br>
+                        ⚠️ Sokoto Central: Finance stress in 21 days<br><br>
+                        ✅ Abuja: Stable trajectory expected<br><br>
+                        ✅ Port Harcourt: Improving conditions
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📈 System Performance</div>
+                    <div style="font-size: 0.7em;">
+                        <div class="trend">
+                            <span>Prediction Accuracy</span>
+                            <span style="color: #00ff64;">94.3%</span>
+                        </div>
+                        <div class="trend">
+                            <span>Early Warning Lead Time</span>
+                            <span style="color: #00d4ff;">18.2 days</span>
+                        </div>
+                        <div class="trend">
+                            <span>Communities Monitored</span>
+                            <span style="color: #00d4ff;">8/8</span>
+                        </div>
+                        <div class="trend">
+                            <span>Data Points (24h)</span>
+                            <span style="color: #00d4ff;">28,440</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -266,27 +470,23 @@
     <script>
         // ============ LOGIN ============
         function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (username === 'demo' && password === 'primelink') {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if (u === 'demo' && p === 'primelink') {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('appScreen').style.display = 'flex';
                 startApp();
             } else {
-                alert('Invalid credentials\n\nUse:\nUsername: demo\nPassword: primelink');
+                alert('Invalid: demo / primelink');
             }
         }
 
-        // Allow Enter key to login
-        document.addEventListener('DOMContentLoaded', () => {
-            const passwordInput = document.getElementById('password');
-            if (passwordInput) {
-                passwordInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') login();
-                });
-            }
-        });
+        function logout() {
+            document.getElementById('appScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
 
         // ============ DATA ============
         const COMMUNITIES = [
@@ -300,209 +500,199 @@
             { name: 'Abuja Municipal', state: 'FCT', pop: 410000, climate: 75, ag: 78, fin: 82, health: 82, infra: 80 }
         ];
 
-        const SECTORS = [
-            { key: 'climate', emoji: '🌧️', label: 'Climate' },
-            { key: 'ag', emoji: '🌾', label: 'Agriculture' },
-            { key: 'fin', emoji: '💰', label: 'Finance' },
-            { key: 'health', emoji: '🏥', label: 'Health' },
-            { key: 'infra', emoji: '🛣️', label: 'Infrastructure' }
-        ];
-
         const ALERT_TEMPLATES = [
             { msg: 'Rainfall {pct}% below seasonal average', type: 'warning' },
             { msg: 'Soil moisture declining rapidly', type: 'warning' },
             { msg: 'Crop yield down {pct}%', type: 'warning' },
             { msg: '{n} farmers enrolled in micro-credit', type: 'good' },
-            { msg: 'Clinic operating at {pct}% capacity', type: 'warning' },
-            { msg: 'Market prices stabilizing', type: 'good' },
-            { msg: 'Parametric insurance payout processed', type: 'good' },
-            { msg: 'Water shortage risk elevated', type: 'critical' },
-            { msg: 'Health workers shortage reported', type: 'critical' },
-            { msg: 'Road infrastructure improved {pct}%', type: 'good' }
+            { msg: 'Clinic capacity at {pct}%', type: 'warning' },
+            { msg: 'Insurance payout ₦{amt}M processed', type: 'good' },
+            { msg: 'Drought risk elevated', type: 'critical' },
+            { msg: 'Water shortage reported', type: 'critical' },
+            { msg: 'Health workers shortage', type: 'critical' },
+            { msg: 'Road infrastructure {pct}% complete', type: 'good' }
         ];
 
-        // ============ STATE ============
-        let currentCommunity = 0;
         let communityData = {};
-        let alerts = [];
-        let time = 0;
+        let allAlerts = [];
+        let selectedCommunity = 0;
 
-        // ============ CASCADE ENGINE ============
-        function calculateCascade(base) {
-            // Climate affects agriculture with delay
-            const climate = base.climate + (Math.random() - 0.5) * 6;
-            const ag = base.ag + (climate - base.climate) * 0.6 + (Math.random() - 0.5) * 4;
-
-            // Agriculture affects finance
-            const fin = base.fin + (ag - base.ag) * 0.5 + (Math.random() - 0.5) * 3;
-
-            // Finance affects health
-            const health = base.health + (fin - base.fin) * 0.4 + (Math.random() - 0.5) * 3;
-
-            // Infrastructure affects all (slowly)
-            const infra = base.infra + (Math.random() - 0.5) * 2;
-
-            return {
-                climate: Math.max(20, Math.min(95, climate)),
-                ag: Math.max(20, Math.min(95, ag)),
-                fin: Math.max(20, Math.min(95, fin)),
-                health: Math.max(20, Math.min(95, health)),
-                infra: Math.max(20, Math.min(95, infra))
-            };
-        }
-
-        function getCompositeScore(sectors) {
-            const scores = Object.values(sectors);
+        function calcScore(community) {
+            const scores = Object.values(community).filter(v => typeof v === 'number');
             return Math.round(scores.reduce((a, b) => a + b) / scores.length);
         }
 
-        function getStatus(score) {
-            if (score >= 75) return { text: 'EXCELLENT', class: 'status-excellent' };
-            if (score >= 65) return { text: 'STABLE', class: 'status-stable' };
-            if (score >= 50) return { text: 'CAUTION', class: 'status-warning' };
-            return { text: 'CRITICAL', class: 'status-critical' };
-        }
-
-        // ============ ALERT GENERATION ============
-        function generateAlerts(community, sectors, score) {
-            const newAlerts = [];
-            const alertChance = score < 60 ? 0.4 : score < 70 ? 0.2 : 0.08;
-
-            if (Math.random() < alertChance) {
-                const template = ALERT_TEMPLATES[Math.floor(Math.random() * ALERT_TEMPLATES.length)];
-                let msg = template.msg;
-                msg = msg.replace('{pct}', Math.floor(Math.random() * 40 + 10));
-                msg = msg.replace('{n}', Math.floor(Math.random() * 500 + 50));
-
-                newAlerts.push({
-                    community: community.name,
-                    message: msg,
-                    type: template.type,
-                    time: 'now'
-                });
-            }
-
-            // Age existing alerts
-            alerts = alerts.map(a => {
-                const timeStr = a.time === 'now' ? '1m ago' : a.time === '1m ago' ? '5m ago' : a.time;
-                return { ...a, time: timeStr };
-            }).slice(0, 5);
-
-            alerts = [...newAlerts, ...alerts].slice(0, 6);
-        }
-
-        // ============ INIT ============
-        function initCommunityData() {
-            communityData = {};
+        function initData() {
             COMMUNITIES.forEach((c, idx) => {
-                communityData[idx] = {
-                    base: { climate: c.climate, ag: c.ag, fin: c.fin, health: c.health, infra: c.infra },
-                    current: { ...c }
-                };
+                communityData[idx] = { ...c, history: [] };
             });
         }
 
-        function renderButtons() {
-            const html = COMMUNITIES.map((c, idx) =>
-                `<button class="community-btn ${idx === currentCommunity ? 'active' : ''}" onclick="selectCommunity(${idx})">${c.name.split(' ')[0]}</button>`
-            ).join('');
-            document.getElementById('communityButtons').innerHTML = html;
+        function generateAlert() {
+            const c = COMMUNITIES[Math.floor(Math.random() * COMMUNITIES.length)];
+            const t = ALERT_TEMPLATES[Math.floor(Math.random() * ALERT_TEMPLATES.length)];
+            let msg = t.msg;
+            msg = msg.replace('{pct}', Math.floor(Math.random() * 40 + 10));
+            msg = msg.replace('{n}', Math.floor(Math.random() * 500 + 50));
+            msg = msg.replace('{amt}', (Math.random() * 2 + 0.5).toFixed(1));
+            allAlerts.unshift({ community: c.name, message: msg, type: t.type, time: 'now' });
+            allAlerts = allAlerts.slice(0, 30);
+        }
+
+        function updateData() {
+            COMMUNITIES.forEach((c, idx) => {
+                const data = communityData[idx];
+                data.climate = Math.max(20, Math.min(95, c.climate + (Math.random() - 0.5) * 4));
+                data.ag = Math.max(20, Math.min(95, c.ag + (data.climate - c.climate) * 0.6 + (Math.random() - 0.5) * 3));
+                data.fin = Math.max(20, Math.min(95, c.fin + (data.ag - c.ag) * 0.5 + (Math.random() - 0.5) * 2));
+                data.health = Math.max(20, Math.min(95, c.health + (data.fin - c.fin) * 0.4 + (Math.random() - 0.5) * 2));
+                data.infra = Math.max(20, Math.min(95, c.infra + (Math.random() - 0.5) * 1));
+                data.history.push(calcScore(data));
+                if (data.history.length > 100) data.history.shift();
+            });
+            if (Math.random() < 0.3) generateAlert();
+            renderPage();
+        }
+
+        function renderPage() {
+            const page = document.querySelector('.page.active').id;
+            if (page === 'dashboard') renderDashboard();
+            else if (page === 'communities') renderCommunities();
+            else if (page === 'alerts') renderAlerts();
+            else if (page === 'sectors') renderSectors();
+            else if (page === 'resources') renderResources();
+            else if (page === 'insurance') renderInsurance();
+            else if (page === 'analytics') renderAnalytics();
         }
 
         function renderDashboard() {
-            const c = COMMUNITIES[currentCommunity];
-            const data = communityData[currentCommunity];
-            const score = getCompositeScore(data.current);
-            const status = getStatus(score);
+            const scores = Object.values(communityData).map(c => calcScore(c));
+            document.getElementById('avgRisk').textContent = Math.round(scores.reduce((a, b) => a + b) / scores.length);
+            document.getElementById('criticalCount').textContent = scores.filter(s => s < 50).length;
+            document.getElementById('warningCount').textContent = scores.filter(s => s >= 50 && s < 65).length;
 
-            let html = `
-                <div class="score-card">
-                    <div class="score-header">
-                        <div class="score-number">${score}</div>
-                        <span class="status-badge ${status.class}">${status.text}</span>
-                    </div>
-                    <div class="sectors">
-            `;
+            const recent = allAlerts.slice(0, 6);
+            document.getElementById('dashboardAlerts').innerHTML = recent.map(a =>
+                `<div class="alert-item alert-${a.type}">${a.community}: ${a.message}</div>`
+            ).join('');
 
-            SECTORS.forEach(s => {
-                const val = Math.round(data.current[s.key]);
-                html += `
-                    <div class="sector">
-                        <span class="sector-emoji">${s.emoji}</span>
-                        <span class="sector-score">${val}</span>
-                        <span class="sector-label">${s.label}</span>
-                    </div>
-                `;
-            });
+            const sorted = Object.entries(communityData).sort((a, b) => calcScore(b[1]) - calcScore(a[1])).slice(0, 3);
+            document.getElementById('topCommunities').innerHTML = sorted.map(([idx, c]) =>
+                `<div class="trend"><span>${c.name}</span><span style="color: #00ff64;">${calcScore(c)}</span></div>`
+            ).join('');
+        }
 
-            html += `
+        function renderCommunities() {
+            document.getElementById('communityGrid').innerHTML = COMMUNITIES.map((c, idx) =>
+                `<div class="community-chip ${idx === selectedCommunity ? 'active' : ''}" onclick="selectCommunity(${idx})">${c.name.split(' ')[0]}</div>`
+            ).join('');
+
+            const c = communityData[selectedCommunity];
+            document.getElementById('selectedCommunityName').textContent = `${COMMUNITIES[selectedCommunity].name} (${COMMUNITIES[selectedCommunity].state})`;
+            document.getElementById('selectedCommunityDetails').innerHTML = `
+                <div style="font-size: 0.7em;">
+                    <div class="sector-bar">
+                        <div class="sector-name"><span>Climate</span><span>${Math.round(c.climate)}</span></div>
+                        <div class="bar"><div class="bar-fill" style="width: ${(c.climate / 95 * 100)}%"></div></div>
                     </div>
+                    <div class="sector-bar">
+                        <div class="sector-name"><span>Agriculture</span><span>${Math.round(c.ag)}</span></div>
+                        <div class="bar"><div class="bar-fill" style="width: ${(c.ag / 95 * 100)}%"></div></div>
+                    </div>
+                    <div class="sector-bar">
+                        <div class="sector-name"><span>Finance</span><span>${Math.round(c.fin)}</span></div>
+                        <div class="bar"><div class="bar-fill" style="width: ${(c.fin / 95 * 100)}%"></div></div>
+                    </div>
+                    <div class="sector-bar">
+                        <div class="sector-name"><span>Health</span><span>${Math.round(c.health)}</span></div>
+                        <div class="bar"><div class="bar-fill" style="width: ${(c.health / 95 * 100)}%"></div></div>
+                    </div>
+                    <div class="sector-bar">
+                        <div class="sector-name"><span>Infrastructure</span><span>${Math.round(c.infra)}</span></div>
+                        <div class="bar"><div class="bar-fill" style="width: ${(c.infra / 95 * 100)}%"></div></div>
+                    </div>
+                    <div style="margin-top: 10px; color: #00d4ff;"><strong>Composite Score: ${calcScore(c)}/100</strong></div>
                 </div>
-                <div class="alerts">
-                    <div class="alerts-title">Live Events</div>
             `;
+            document.getElementById('selectedCommunityCard').style.display = 'block';
+        }
 
-            alerts.forEach(a => {
-                const cls = a.type === 'critical' ? 'alert-critical' : a.type === 'good' ? 'alert-good' : '';
-                html += `
-                    <div class="alert-item ${cls}">
-                        <span class="alert-message">${a.message}</span>
-                        <span class="alert-time">${a.time}</span>
-                    </div>
-                `;
+        function renderAlerts() {
+            document.getElementById('fullAlertsList').innerHTML = allAlerts.slice(0, 20).map(a =>
+                `<div class="alert-item alert-${a.type}">${a.community}: ${a.message}</div>`
+            ).join('');
+
+            const critical = allAlerts.filter(a => a.type === 'critical').length;
+            const warning = allAlerts.filter(a => a.type === 'warning').length;
+            const good = allAlerts.filter(a => a.type === 'good').length;
+            document.getElementById('criticalAlerts').textContent = critical;
+            document.getElementById('warningAlerts').textContent = warning;
+            document.getElementById('goodAlerts').textContent = good;
+        }
+
+        function renderSectors() {
+            const sectors = ['climate', 'ag', 'fin', 'health', 'infra'];
+            const sectorNames = ['Climate', 'Agriculture', 'Finance', 'Health', 'Infrastructure'];
+            let html = '';
+            sectors.forEach((s, i) => {
+                const scores = Object.values(communityData).map(c => c[s]);
+                const avg = Math.round(scores.reduce((a, b) => a + b) / scores.length);
+                html += `<div class="sector-bar"><div class="sector-name"><span>${sectorNames[i]}</span><span>${avg}</span></div><div class="bar"><div class="bar-fill" style="width: ${(avg / 95 * 100)}%"></div></div></div>`;
             });
+            document.getElementById('sectorAnalysis').innerHTML = html;
+        }
 
-            html += '</div>';
-            document.getElementById('dashboard').innerHTML = html;
+        function renderResources() {
+            const communities = Object.values(communityData);
+            const critical = communities.filter(c => calcScore(c) < 50);
+            document.getElementById('aidDistribution').innerHTML = `
+                <div style="font-size: 0.7em;">
+                    ${critical.map(c => `<div class="trend"><span>${c.name}</span><span style="color: #ff6666;">Critical</span></div>`).join('')}
+                </div>
+            `;
+        }
+
+        function renderInsurance() {
+            const communities = Object.values(communityData).map((c, i) => ({ ...c, idx: i }));
+            const payouts = communities.filter(c => calcScore(c) < 65);
+            document.getElementById('insurancePayouts').innerHTML = `
+                <div style="font-size: 0.7em;">
+                    ${payouts.slice(0, 6).map(c => `<div class="trend"><span>${c.name}</span><span style="color: #00ff64;">₦${(Math.random() * 2 + 0.5).toFixed(1)}M</span></div>`).join('')}
+                </div>
+            `;
+        }
+
+        function renderAnalytics() {
+            const c = communityData[selectedCommunity];
+            const recent = c.history.slice(-7).map((h, i) => {
+                const pct = Math.round((h / 100) * 100);
+                return `<div class="trend"><span>Day ${i - 6}</span><span>${h}</span></div>`;
+            });
+            document.getElementById('riskTrends').innerHTML = recent.join('');
+        }
+
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
+            event.target.classList.add('active');
+            renderPage();
         }
 
         function selectCommunity(idx) {
-            currentCommunity = idx;
-            renderButtons();
-            renderDashboard();
+            selectedCommunity = idx;
+            renderCommunities();
         }
 
-        // ============ UPDATE LOOP ============
-        function update() {
-            time++;
-
-            // Update all communities
-            for (let idx = 0; idx < COMMUNITIES.length; idx++) {
-                const data = communityData[idx];
-                data.current = calculateCascade(data.base);
-
-                // Update base slightly (drift)
-                data.base.climate += (Math.random() - 0.5) * 0.5;
-                data.base.ag += (Math.random() - 0.5) * 0.3;
-                data.base.fin += (Math.random() - 0.5) * 0.2;
-                data.base.health += (Math.random() - 0.5) * 0.3;
-                data.base.infra += (Math.random() - 0.5) * 0.1;
-
-                // Clamp bases
-                Object.keys(data.base).forEach(k => {
-                    data.base[k] = Math.max(20, Math.min(95, data.base[k]));
-                });
-            }
-
-            // Generate alerts for current community
-            const c = COMMUNITIES[currentCommunity];
-            const data = communityData[currentCommunity];
-            const score = getCompositeScore(data.current);
-            generateAlerts(c, data.current, score);
-
-            // Render
-            renderDashboard();
-        }
-
-        // ============ START ============
         function startApp() {
-            initCommunityData();
-            renderButtons();
+            document.getElementById('password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') login();
+            });
+            initData();
             renderDashboard();
-            setInterval(update, 2000);
+            setInterval(updateData, 2000);
         }
 
-        // Auto-focus username on load
         window.addEventListener('load', () => {
             document.getElementById('username').focus();
         });
