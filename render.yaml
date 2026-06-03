@@ -14,7 +14,7 @@ services:
 
   - type: static_site
     name: primelink-frontend
-    buildCommand: echo "PWA Mobile Dashboard - $(date)" && cp ./frontend/* ./frontend/ 2>/dev/null || true
+    buildCommand: "true"
     staticPublishPath: ./frontend
     routes:
       - path: /
