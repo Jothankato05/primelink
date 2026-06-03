@@ -3,111 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0f0f1e">
     <title>PrimeLink Intelligence</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #0a0a0f;
-            color: #fff;
-        }
+        html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        body { background: #0a0f1f; color: #fff; }
 
         .login-screen {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: #0a0a0f;
+            background: #0a0f1f;
         }
         .login-box {
             width: 90%;
             max-width: 320px;
             padding: 40px;
-            background: rgba(0, 212, 255, 0.08);
+            background: rgba(0, 212, 255, 0.1);
             border: 2px solid #00d4ff;
             border-radius: 12px;
             text-align: center;
         }
         .login-box h1 {
             color: #00d4ff;
-            font-size: 2.2em;
+            font-size: 2.5em;
             margin-bottom: 8px;
+            letter-spacing: 1px;
         }
-        .login-box p {
+        .login-box .subtitle {
             color: #888;
             font-size: 0.9em;
             margin-bottom: 25px;
+            letter-spacing: 2px;
         }
         .login-input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #00d4ff;
-            color: #00d4ff;
-            border-radius: 6px;
-            font-size: 1em;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 0.95em;
         }
-        .login-input::placeholder { color: #666; }
         .login-btn {
             width: 100%;
             padding: 12px;
             margin-top: 20px;
             background: #00d4ff;
-            color: #0a0a0f;
+            color: #000;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             font-weight: 700;
             font-size: 1em;
             cursor: pointer;
-        }
-        .login-hint {
-            color: #888;
-            font-size: 0.8em;
-            margin-top: 15px;
         }
 
         .app-container {
             display: none;
             height: 100vh;
-            display: flex;
             flex-direction: column;
         }
 
+        .app-container.show {
+            display: flex;
+        }
+
         .header {
-            background: rgba(0, 212, 255, 0.08);
+            background: rgba(0, 0, 0, 0.5);
             border-bottom: 1px solid #00d4ff;
-            padding: 12px 16px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
+            z-index: 200;
         }
-        .header-left { display: flex; align-items: center; gap: 8px; }
-        .header-left span { color: #00d4ff; font-weight: 600; }
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-title strong {
+            color: #00d4ff;
+            font-size: 1em;
+            letter-spacing: 1px;
+        }
+        .header-title span {
+            color: #999;
+            font-size: 0.85em;
+            letter-spacing: 2px;
+        }
         .live-badge {
             background: #00ff64;
-            color: #0a0a0f;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 0.7em;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 0.75em;
             font-weight: 700;
         }
-        .logout-btn {
+        .back-btn, .logout-btn {
             padding: 6px 12px;
-            background: rgba(255, 100, 100, 0.2);
-            color: #ff6666;
-            border: 1px solid #ff6666;
-            border-radius: 4px;
+            background: transparent;
+            color: #888;
+            border: 1px solid #444;
+            border-radius: 3px;
             cursor: pointer;
             font-size: 0.8em;
         }
+        .logout-btn { color: #f00; border-color: #f00; }
 
-        .main-content {
+        .main {
             display: flex;
             flex: 1;
             overflow: hidden;
@@ -115,223 +123,259 @@
 
         #map {
             flex: 1;
-            background: #0a0a0f;
             position: relative;
         }
 
         .sidebar {
-            width: 300px;
-            background: rgba(0, 0, 0, 0.6);
+            width: 340px;
+            background: rgba(0, 0, 0, 0.8);
             border-left: 1px solid #00d4ff;
+            padding: 20px;
             overflow-y: auto;
-            padding: 16px;
             flex-shrink: 0;
         }
 
-        .community-header {
-            color: #00d4ff;
-            font-size: 0.85em;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 4px;
+        .sidebar-header {
+            margin-bottom: 20px;
         }
-        .community-name {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 12px;
-        }
-        .community-pop {
-            color: #888;
-            font-size: 0.8em;
-            margin-bottom: 16px;
-        }
-
-        .score-box {
-            background: rgba(0, 212, 255, 0.1);
-            border: 1px solid #00d4ff;
-            border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        .score-label {
+        .sidebar-label {
             color: #888;
             font-size: 0.75em;
+            letter-spacing: 1px;
             text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .sidebar-title {
+            color: #fff;
+            font-size: 1.4em;
+            font-weight: 700;
             margin-bottom: 6px;
         }
-        .score-value {
-            font-size: 2.2em;
-            color: #00d4ff;
-            font-weight: 700;
-        }
-        .score-status {
-            color: #ffb347;
-            font-size: 0.8em;
-            margin-top: 6px;
+        .sidebar-pop {
+            color: #888;
+            font-size: 0.85em;
         }
 
-        .sector-title {
-            color: #00d4ff;
+        .risk-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        .risk-label {
+            color: #888;
             font-size: 0.8em;
+            letter-spacing: 1px;
             text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .risk-score {
+            font-size: 3em;
+            font-weight: 700;
+            color: #ffb347;
+            line-height: 1;
+        }
+        .risk-badge {
+            display: inline-block;
+            background: rgba(255, 179, 71, 0.2);
+            color: #ffb347;
+            padding: 4px 8px;
+            border-radius: 2px;
+            font-size: 0.75em;
             font-weight: 600;
-            margin-top: 16px;
-            margin-bottom: 10px;
+            margin-top: 8px;
         }
 
-        .sector-row {
+        .sectors-label {
+            color: #888;
+            font-size: 0.8em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .sector-item {
+            margin-bottom: 12px;
+        }
+        .sector-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-size: 0.8em;
+            margin-bottom: 4px;
+            font-size: 0.85em;
         }
         .sector-name {
-            display: flex;
-            align-items: center;
-            gap: 6px;
             color: #888;
         }
         .sector-score {
             color: #00d4ff;
             font-weight: 600;
         }
-
-        .alerts-title {
-            color: #00d4ff;
-            font-size: 0.8em;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-top: 16px;
-            margin-bottom: 10px;
+        .sector-bar {
+            background: rgba(0, 0, 0, 0.5);
+            height: 6px;
+            border-radius: 2px;
+            overflow: hidden;
         }
+        .sector-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #00ff64);
+        }
+
+        .alerts-label {
+            color: #888;
+            font-size: 0.8em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
         .alert-item {
             background: rgba(0, 0, 0, 0.4);
             padding: 10px;
-            margin-bottom: 8px;
-            border-left: 2px solid #ffb347;
-            border-radius: 3px;
-            font-size: 0.75em;
-            line-height: 1.3;
+            margin-bottom: 10px;
+            border-left: 3px solid #ffb347;
+            border-radius: 2px;
+            font-size: 0.8em;
+            line-height: 1.4;
+            color: #ddd;
         }
-        .alert-critical { border-left-color: #ff4444; }
-        .alert-good { border-left-color: #00ff64; }
+        .alert-item.good { border-left-color: #00ff64; }
+        .alert-item.critical { border-left-color: #ff4444; }
         .alert-time {
             color: #666;
-            font-size: 0.7em;
+            font-size: 0.75em;
             margin-top: 4px;
         }
 
-        .risk-legend {
+        .legend {
             position: absolute;
-            bottom: 20px;
+            bottom: 80px;
             left: 20px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             border: 1px solid #00d4ff;
-            border-radius: 6px;
+            border-radius: 4px;
             padding: 12px;
             font-size: 0.8em;
             z-index: 100;
+        }
+        .legend-title {
+            color: #888;
+            font-size: 0.75em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
         .legend-item {
             display: flex;
             align-items: center;
             gap: 8px;
             margin-bottom: 6px;
+            color: #ddd;
         }
         .legend-dot {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
         }
 
-        .bottom-stats {
-            display: flex;
-            gap: 12px;
+        .stats-bar {
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
             flex-wrap: wrap;
             justify-content: center;
             z-index: 100;
         }
-        .stat-chip {
+        .stat {
             background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #00d4ff;
+            border: 1px solid #333;
             padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 0.75em;
+            border-radius: 3px;
             text-align: center;
-            min-width: 80px;
+            min-width: 70px;
+            font-size: 0.75em;
         }
-        .stat-chip-value {
+        .stat-value {
             color: #ffb347;
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 1.2em;
+            line-height: 1;
         }
-        .stat-chip-label {
-            color: #888;
-            font-size: 0.75em;
+        .stat-label {
+            color: #666;
+            margin-top: 2px;
+            font-size: 0.8em;
         }
 
         .sidebar::-webkit-scrollbar {
             width: 4px;
         }
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
         .sidebar::-webkit-scrollbar-thumb {
             background: rgba(0, 212, 255, 0.3);
             border-radius: 2px;
         }
+
+        .leaflet-control-attribution { background: transparent; color: #666; }
     </style>
 </head>
 <body>
-    <!-- LOGIN -->
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1>PrimeLink</h1>
-            <p>INTELLIGENCE</p>
+            <p class="subtitle">INTELLIGENCE</p>
             <input type="text" id="username" placeholder="Username" class="login-input">
             <input type="password" id="password" placeholder="Password" class="login-input">
             <button onclick="login()" class="login-btn">Login</button>
-            <p class="login-hint">Demo: demo / primelink</p>
+            <p style="color: #666; font-size: 0.8em; margin-top: 15px;">Demo: demo / primelink</p>
         </div>
     </div>
 
-    <!-- APP -->
     <div id="appScreen" class="app-container">
         <div class="header">
-            <div class="header-left">
-                <span>◉ PrimeLink</span>
-                <span style="color: #888;">INTELLIGENCE</span>
+            <div class="header-title">
+                <strong>◉ PrimeLink</strong>
+                <span>INTELLIGENCE</span>
                 <span class="live-badge">● LIVE</span>
             </div>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
 
-        <div class="main-content">
+        <div class="main">
             <div id="map"></div>
 
             <div class="sidebar">
-                <div class="community-header">Community</div>
-                <div class="community-name" id="communityName">Kano North</div>
-                <div class="community-pop" id="communityPop">285K residents</div>
-
-                <div class="score-box">
-                    <div class="score-label">Community Risk Index</div>
-                    <div class="score-value" id="riskScore">68</div>
-                    <div class="score-status" id="riskStatus">STABLE</div>
+                <div class="sidebar-header">
+                    <div class="sidebar-label">Community</div>
+                    <div class="sidebar-title" id="comName">Kano North</div>
+                    <div class="sidebar-pop" id="comPop">45.2K residents</div>
                 </div>
 
-                <div class="sector-title">Sector Scores</div>
-                <div id="sectorsList"></div>
+                <div class="risk-box">
+                    <div class="risk-label">Community Risk Index</div>
+                    <div class="risk-score" id="riskScore">68</div>
+                    <span class="risk-badge" id="riskStatus">STABLE</span>
+                </div>
 
-                <div class="alerts-title">Alerts</div>
-                <div id="alertsList"></div>
+                <label class="sectors-label">Sector Scores</label>
+                <div id="sectorsContainer"></div>
+
+                <label class="alerts-label">Alerts</label>
+                <div id="alertsContainer"></div>
             </div>
 
-            <div class="risk-legend">
-                <strong style="color: #00d4ff; display: block; margin-bottom: 8px;">RISK LEVEL</strong>
+            <div class="legend">
+                <div class="legend-title">Risk Level</div>
                 <div class="legend-item">
                     <div class="legend-dot" style="background: #00ff64;"></div>
                     <span>Stable (65-100)</span>
@@ -346,172 +390,154 @@
                 </div>
             </div>
 
-            <div class="bottom-stats" id="bottomStats"></div>
+            <div class="stats-bar" id="statsBar"></div>
         </div>
     </div>
 
     <script>
-        // Data
         const COMMUNITIES = [
-            { id: 0, name: 'Kano North', state: 'Kano', pop: 285000, lat: 12.0, lng: 8.5, climate: 65, ag: 60, fin: 55, health: 70, infra: 65 },
-            { id: 1, name: 'Ibadan Central', state: 'Oyo', pop: 320000, lat: 7.4, lng: 3.9, climate: 72, ag: 70, fin: 75, health: 78, infra: 75 },
-            { id: 2, name: 'Maiduguri', state: 'Borno', pop: 215000, lat: 11.8, lng: 13.2, climate: 45, ag: 40, fin: 50, health: 48, infra: 52 },
-            { id: 3, name: 'Jos North', state: 'Plateau', pop: 180000, lat: 9.9, lng: 8.9, climate: 68, ag: 65, fin: 62, health: 68, infra: 70 },
-            { id: 4, name: 'Enugu East', state: 'Enugu', pop: 220000, lat: 6.5, lng: 7.5, climate: 72, ag: 70, fin: 68, health: 72, infra: 70 },
-            { id: 5, name: 'Sokoto Central', state: 'Sokoto', pop: 195000, lat: 13.0, lng: 5.2, climate: 58, ag: 55, fin: 60, health: 62, infra: 58 },
-            { id: 6, name: 'Port Harcourt', state: 'Rivers', pop: 280000, lat: 4.8, lng: 7.0, climate: 70, ag: 68, fin: 70, health: 72, infra: 72 },
-            { id: 7, name: 'Abuja Municipal', state: 'FCT', pop: 410000, lat: 9.1, lng: 7.5, climate: 75, ag: 78, fin: 82, health: 82, infra: 80 }
+            { id: 0, name: 'Kano North', state: 'Kano', pop: 285, lat: 12.0, lng: 8.5, climate: 65, ag: 60, fin: 55, health: 70, infra: 65 },
+            { id: 1, name: 'Ibadan Central', state: 'Oyo', pop: 320, lat: 7.4, lng: 3.9, climate: 72, ag: 70, fin: 75, health: 78, infra: 75 },
+            { id: 2, name: 'Maiduguri', state: 'Borno', pop: 215, lat: 11.8, lng: 13.2, climate: 45, ag: 40, fin: 50, health: 48, infra: 52 },
+            { id: 3, name: 'Jos North', state: 'Plateau', pop: 180, lat: 9.9, lng: 8.9, climate: 68, ag: 65, fin: 62, health: 68, infra: 70 },
+            { id: 4, name: 'Enugu East', state: 'Enugu', pop: 220, lat: 6.5, lng: 7.5, climate: 72, ag: 70, fin: 68, health: 72, infra: 70 },
+            { id: 5, name: 'Sokoto Central', state: 'Sokoto', pop: 195, lat: 13.0, lng: 5.2, climate: 58, ag: 55, fin: 60, health: 62, infra: 58 },
+            { id: 6, name: 'Port Harcourt', state: 'Rivers', pop: 280, lat: 4.8, lng: 7.0, climate: 70, ag: 68, fin: 70, health: 72, infra: 72 },
+            { id: 7, name: 'Abuja Municipal', state: 'FCT', pop: 410, lat: 9.1, lng: 7.5, climate: 75, ag: 78, fin: 82, health: 82, infra: 80 }
         ];
 
         const ALERTS = [
-            { msg: 'Soil moisture declining in Kano North — 46% to 38% over 48h', type: 'warning' },
-            { msg: 'Parametric insurance payout processed — ₦1.2M disbursed to 47 farmers', type: 'good' },
-            { msg: 'Kano Central Clinic operating at 68% capacity — 8 facilities reporting', type: 'warning' },
-            { msg: 'Pest activity detected across 3 farm clusters in Ibadan Central', type: 'warning' },
-            { msg: 'Drought risk elevated in Sokoto Central — rainfall 40% below seasonal avg', type: 'critical' },
-            { msg: 'Micro-credit scheme: 312 new farmers enrolled in Abuja Municipal', type: 'good' }
+            'Soil moisture declining in Kano North — 46% to 38% over 48 hours',
+            'Parametric insurance payout processed — ₦1.2M disbursed to 47 farmers',
+            'Clinic operating at 68% capacity — 8 facilities reporting',
+            'Pest activity detected across 3 farm clusters',
+            'Drought risk elevated — rainfall 40% below seasonal average',
+            'Micro-credit scheme: 312 new farmers enrolled'
         ];
 
-        let communityData = {};
-        let selectedCommunity = 0;
+        let data = {};
+        let selected = 0;
         let map = null;
         let markers = {};
 
         function getScore(c) {
-            const scores = [c.climate, c.ag, c.fin, c.health, c.infra];
-            return Math.round(scores.reduce((a, b) => a + b) / scores.length);
+            return Math.round([c.climate, c.ag, c.fin, c.health, c.infra].reduce((a,b) => a+b) / 5);
         }
 
-        function getColor(score) {
-            if (score >= 65) return '#00ff64';
-            if (score >= 40) return '#ffb347';
-            return '#ff4444';
+        function getColor(s) {
+            return s >= 65 ? '#00ff64' : s >= 40 ? '#ffb347' : '#ff4444';
         }
 
         function initMap() {
-            map = L.map('map').setView([9.1, 7.5], 5);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
-                attribution: '',
-                maxZoom: 19
-            }).addTo(map);
+            map = L.map('map', { attributionControl: false }).setView([9.1, 7.5], 5);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
 
-            COMMUNITIES.forEach((c, idx) => {
-                const score = getScore(communityData[idx]);
-                const color = getColor(score);
+            COMMUNITIES.forEach((c, i) => {
+                const sc = getScore(data[i]);
                 const marker = L.circleMarker([c.lat, c.lng], {
-                    radius: 15,
-                    fillColor: color,
-                    color: color,
+                    radius: 14,
+                    fillColor: getColor(sc),
+                    color: getColor(sc),
                     weight: 2,
-                    opacity: 0.8,
-                    fillOpacity: 0.7
+                    opacity: 0.85,
+                    fillOpacity: 0.75
                 }).addTo(map);
-
-                marker.on('click', () => selectCommunity(idx));
-                markers[idx] = marker;
+                marker.on('click', () => selectCom(i));
+                markers[i] = marker;
             });
         }
 
-        function selectCommunity(idx) {
-            selectedCommunity = idx;
-            renderSidebar();
+        function selectCom(i) {
+            selected = i;
+            render();
         }
 
-        function renderSidebar() {
-            const c = communityData[selectedCommunity];
-            const comm = COMMUNITIES[selectedCommunity];
-            const score = getScore(c);
+        function render() {
+            const c = COMMUNITIES[selected];
+            const d = data[selected];
+            const sc = getScore(d);
 
-            document.getElementById('communityName').textContent = comm.name;
-            document.getElementById('communityPop').textContent = `${(comm.pop / 1000).toFixed(0)}K residents`;
-            document.getElementById('riskScore').textContent = score;
-            document.getElementById('riskStatus').textContent = score >= 65 ? 'STABLE' : score >= 50 ? 'CAUTION' : 'CRITICAL';
+            document.getElementById('comName').textContent = c.name;
+            document.getElementById('comPop').textContent = `${c.pop}K residents`;
+            document.getElementById('riskScore').textContent = sc;
+            document.getElementById('riskStatus').textContent = sc >= 65 ? 'STABLE' : sc >= 50 ? 'CAUTION' : 'CRITICAL';
 
-            document.getElementById('sectorsList').innerHTML = `
-                <div class="sector-row">
-                    <span class="sector-name">🏥 HEALTH</span>
-                    <span class="sector-score">${Math.round(c.health)}</span>
+            const sectors = [
+                { name: 'HEALTH', emoji: '🏥', val: Math.round(d.health), color: '#00ff64' },
+                { name: 'AGRICULTURE', emoji: '🌾', val: Math.round(d.ag), color: '#ffb347' },
+                { name: 'ENVIRONMENT', emoji: '🌍', val: Math.round(d.climate), color: '#00ff64' },
+                { name: 'FINANCE', emoji: '💰', val: Math.round(d.fin), color: '#ff6666' },
+                { name: 'CLIMATE', emoji: '🌧️', val: Math.round(d.climate), color: '#00ff64' }
+            ];
+
+            document.getElementById('sectorsContainer').innerHTML = sectors.map(s => `
+                <div class="sector-item">
+                    <div class="sector-header">
+                        <span class="sector-name">${s.emoji} ${s.name}</span>
+                        <span class="sector-score">${s.val}</span>
+                    </div>
+                    <div class="sector-bar">
+                        <div class="sector-fill" style="width: ${(s.val/95)*100}%; background: linear-gradient(90deg, ${s.color}, ${s.color}80);"></div>
+                    </div>
                 </div>
-                <div class="sector-row">
-                    <span class="sector-name">🌾 AGRICULTURE</span>
-                    <span class="sector-score">${Math.round(c.ag)}</span>
-                </div>
-                <div class="sector-row">
-                    <span class="sector-name">🌍 ENVIRONMENT</span>
-                    <span class="sector-score">${Math.round(c.climate)}</span>
-                </div>
-                <div class="sector-row">
-                    <span class="sector-name">💰 FINANCE</span>
-                    <span class="sector-score">${Math.round(c.fin)}</span>
-                </div>
-                <div class="sector-row">
-                    <span class="sector-name">🛣️ CLIMATE</span>
-                    <span class="sector-score">${Math.round(c.climate)}</span>
-                </div>
-            `;
+            `).join('');
 
-            const alerts = ALERTS.filter(a => a).slice(0, 3);
-            document.getElementById('alertsList').innerHTML = alerts.map(a => {
-                const cls = a.type === 'critical' ? 'alert-critical' : a.type === 'good' ? 'alert-good' : '';
-                return `<div class="alert-item ${cls}">${a.msg}<div class="alert-time">${Math.floor(Math.random() * 4 + 1)}h ago</div></div>`;
-            }).join('');
+            document.getElementById('alertsContainer').innerHTML = ALERTS.slice(0, 3).map((a, i) => `
+                <div class="alert-item ${i % 3 === 2 ? 'good' : i % 2 === 0 ? 'critical' : ''}">
+                    ${a}
+                    <div class="alert-time">${Math.floor(Math.random()*12+1)}h ago</div>
+                </div>
+            `).join('');
 
-            const scores = Object.values(communityData).map(x => getScore(x));
-            const stats = COMMUNITIES.map((c, i) => ({ name: c.name.split(' ')[0], score: getScore(communityData[i]) }));
-            document.getElementById('bottomStats').innerHTML = stats.map(s =>
-                `<div class="stat-chip"><div class="stat-chip-value">${s.score}</div><div class="stat-chip-label">${s.name}</div></div>`
-            ).join('');
-        }
+            document.getElementById('statsBar').innerHTML = COMMUNITIES.map((c, i) => `
+                <div class="stat">
+                    <div class="stat-value">${getScore(data[i])}</div>
+                    <div class="stat-label">${c.name.split(' ')[0]}</div>
+                </div>
+            `).join('');
 
-        function updateData() {
-            COMMUNITIES.forEach((comm, idx) => {
-                const c = communityData[idx];
-                c.climate = Math.max(20, Math.min(95, c.climate + (Math.random() - 0.5) * 3));
-                c.ag = Math.max(20, Math.min(95, c.ag + (c.climate - comm.climate) * 0.6 + (Math.random() - 0.5) * 2));
-                c.fin = Math.max(20, Math.min(95, c.fin + (c.ag - comm.ag) * 0.5 + (Math.random() - 0.5) * 1.5));
-                c.health = Math.max(20, Math.min(95, c.health + (c.fin - comm.fin) * 0.4 + (Math.random() - 0.5) * 1.5));
-                c.infra = Math.max(20, Math.min(95, c.infra + (Math.random() - 0.5) * 0.5));
-
-                const score = getScore(c);
-                const color = getColor(score);
-                if (markers[idx]) {
-                    markers[idx].setStyle({ fillColor: color, color: color });
-                }
+            Object.entries(markers).forEach(([i, m]) => {
+                m.setStyle({ fillColor: getColor(getScore(data[i])), color: getColor(getScore(data[i])) });
             });
-            renderSidebar();
+        }
+
+        function update() {
+            COMMUNITIES.forEach((c, i) => {
+                const d = data[i];
+                d.climate += (Math.random() - 0.5) * 3;
+                d.ag += (d.climate - c.climate) * 0.6 + (Math.random() - 0.5) * 2;
+                d.fin += (d.ag - c.ag) * 0.5 + (Math.random() - 0.5) * 1.5;
+                d.health += (d.fin - c.fin) * 0.4 + (Math.random() - 0.5) * 1.5;
+                d.infra += (Math.random() - 0.5) * 0.5;
+                ['climate', 'ag', 'fin', 'health', 'infra'].forEach(k => {
+                    d[k] = Math.max(20, Math.min(95, d[k]));
+                });
+            });
+            render();
         }
 
         function login() {
             if (document.getElementById('username').value === 'demo' && document.getElementById('password').value === 'primelink') {
                 document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('appScreen').style.display = 'flex';
-
-                COMMUNITIES.forEach((c, idx) => {
-                    communityData[idx] = { ...c };
-                });
-
+                document.getElementById('appScreen').classList.add('show');
+                COMMUNITIES.forEach((c, i) => { data[i] = { ...c }; });
                 initMap();
-                renderSidebar();
-                setInterval(updateData, 2000);
+                render();
+                setInterval(update, 2000);
             } else {
-                alert('Invalid credentials\n\nUse: demo / primelink');
+                alert('Invalid: demo / primelink');
             }
         }
 
         function logout() {
-            document.getElementById('appScreen').style.display = 'none';
+            document.getElementById('appScreen').classList.remove('show');
             document.getElementById('loginScreen').style.display = 'flex';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         }
 
-        document.getElementById('password').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') login();
-        });
-
-        window.addEventListener('load', () => {
-            document.getElementById('username').focus();
-        });
+        document.getElementById('password').addEventListener('keypress', e => e.key === 'Enter' && login());
+        window.addEventListener('load', () => document.getElementById('username').focus());
     </script>
 </body>
 </html>
