@@ -1,9 +1,0 @@
-{
-  "name": "primelink-frontend",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "python3 -m http.server 5173",
-    "build": "echo 'Static site - no build needed'"
-  }
-}
