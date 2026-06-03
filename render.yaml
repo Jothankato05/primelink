@@ -1,21 +1,8 @@
 services:
-  - type: web
-    name: primelink-backend
-    runtime: node
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && node server.js
-    envVars:
-      - key: FRONTEND_URL
-        value: https://primelink-frontend.onrender.com
-      - key: NODE_ENV
-        value: production
-    plan: free
-    region: oregon
-
   - type: static_site
     name: primelink-frontend
-    buildCommand: "true"
-    staticPublishPath: ./frontend
+    buildCommand: "echo 'PrimeLink Offline Platform'"
+    staticPublishPath: frontend
     routes:
       - path: /
         destination: /index.html
@@ -23,7 +10,3 @@ services:
         destination: /index.html
     plan: free
     region: oregon
-    headers:
-      - path: /index.html
-        name: Cache-Control
-        value: "no-cache, no-store, must-revalidate"
