@@ -14,10 +14,16 @@ services:
 
   - type: static_site
     name: primelink-frontend
-    buildCommand: echo "Static site - no build needed"
+    buildCommand: echo "PWA Mobile Dashboard - $(date)" && cp ./frontend/* ./frontend/ 2>/dev/null || true
     staticPublishPath: ./frontend
     routes:
       - path: /
         destination: /index.html
+      - path: /*
+        destination: /index.html
     plan: free
     region: oregon
+    headers:
+      - path: /index.html
+        name: Cache-Control
+        value: "no-cache, no-store, must-revalidate"
