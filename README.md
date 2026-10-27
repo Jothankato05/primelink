@@ -1,6 +1,8 @@
 # PrimeLink
 
-**Community Risk Intelligence Network** — real-time cross-sector monitoring for Nigerian communities, built by Primers Corporation.
+> **Live:** [primelink.primersgroup.ng](https://primelink.primersgroup.ng) · A [Primers Group](https://primersgroup.ng) product
+
+**Community Risk Intelligence Network** — real-time cross-sector monitoring for Nigerian communities, built by Primers Group.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-jothankato05.github.io%2Fprimelink-00C896?style=flat-square)](https://jothankato05.github.io/primelink/)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
