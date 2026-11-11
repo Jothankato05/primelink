@@ -32,17 +32,29 @@ const BASELINES = {
 
 const SECTORS = ['health', 'agriculture', 'environment', 'finance', 'climate'];
 
-// In-memory state
-const state = {};
-COMMUNITIES.forEach(c => {
-  state[c.id] = {
-    ...c,
-    scores:  { ...BASELINES[c.id] },
-    history: [],
-  };
-});
+// ─── Deterministic simulation ────────────────────────────────────────────────
+// Every reading is a pure function of the clock: tick N's scores come from replaying a seeded random
+// walk over the last HISTORY ticks. Any number of server instances (or serverless invocations) agree on
+// the same live numbers and alerts, and nothing has to keep running between requests.
+export const TICK_MS = 3000;
+const HISTORY = 48;
 
-let tickCount = 0;
+function mulberry32(seed) {
+  return function () {
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const seedFor = (communityId, tick) => (communityId * 2654435761) ^ (tick * 40503);
+
+// Run fn with Math.random replaced by a seeded generator (the risk engine draws from Math.random).
+function seeded(seed, fn) {
+  const real = Math.random;
+  Math.random = mulberry32(seed);
+  try { return fn(); } finally { Math.random = real; }
+}
 
 function randomWalk(current, baseline, volatility = 1.2) {
   const reversion = (baseline - current) * 0.04;
@@ -50,94 +62,69 @@ function randomWalk(current, baseline, volatility = 1.2) {
   return Math.max(5, Math.min(99, Math.round(current + reversion + noise)));
 }
 
-function tick(io) {
-  tickCount++;
-  const allCommunityScores = [];
+export const currentTick = (now = Date.now()) => Math.floor(now / TICK_MS);
 
-  for (const community of COMMUNITIES) {
-    const prev = { ...state[community.id].scores };
-    const next = {};
-
-    for (const sector of SECTORS) {
-      next[sector] = randomWalk(prev[sector], BASELINES[community.id][sector]);
-    }
-
-    const correlated = applyCrossCorrelation(next, prev);
-    const alerts     = detectAlerts(prev, correlated, community.name);
-
-    state[community.id].scores = correlated;
-
-    state[community.id].history.push({
-      tick: tickCount,
-      ts:   Date.now(),
-      composite: compositeScore(correlated),
-      ...correlated,
+// Scores, history and alerts for one community over the window ending at `tick`.
+function replay(community, tick) {
+  let scores = { ...BASELINES[community.id] };
+  const history = [];
+  const alerts = [];
+  for (let t = tick - HISTORY + 1; t <= tick; t++) {
+    const prev = scores;
+    scores = seeded(seedFor(community.id, t), () => {
+      const next = {};
+      for (const sector of SECTORS) next[sector] = randomWalk(prev[sector], BASELINES[community.id][sector]);
+      const correlated = applyCrossCorrelation(next, prev);
+      for (const a of detectAlerts(prev, correlated, community.name)) {
+        alerts.push({ ...a, id: `alert-${t}-${community.id}-${a.sector}`, time: new Date(t * TICK_MS).toISOString() });
+      }
+      return correlated;
     });
-    if (state[community.id].history.length > 48) {
-      state[community.id].history.shift();
-    }
-
-    io.emit('sensor:update', {
-      communityId:   community.id,
-      communityName: community.name,
-      scores:        correlated,
-      composite:     compositeScore(correlated),
-      ts:            Date.now(),
-    });
-
-    for (const alert of alerts) {
-      io.emit('alert:new', alert);
-    }
-
-    allCommunityScores.push({
-      id:        community.id,
-      name:      community.name,
-      state:     community.state,
-      composite: compositeScore(correlated),
-      scores:    correlated,
-    });
+    history.push({ tick: t, ts: t * TICK_MS, composite: compositeScore(scores), ...scores });
   }
-
-  if (tickCount % 10 === 0) {
-    io.emit('map:overview', allCommunityScores);
-  }
+  return { scores, history, alerts };
 }
 
+const view = (c, r) => ({ ...c, scores: r.scores, composite: compositeScore(r.scores) });
+
+export function getCommunities(now = Date.now()) {
+  const tick = currentTick(now);
+  return COMMUNITIES.map((c) => view(c, replay(c, tick)));
+}
+
+export function getCommunity(id, now = Date.now()) {
+  const c = COMMUNITIES.find((x) => x.id === Number(id));
+  if (!c) return null;
+  const r = replay(c, currentTick(now));
+  return { ...view(c, r), history: r.history };
+}
+
+// Most recent alerts across all communities, newest first.
+export function getRecentAlerts(limit = 20, now = Date.now()) {
+  const tick = currentTick(now);
+  return COMMUNITIES.flatMap((c) => replay(c, tick).alerts)
+    .sort((a, b) => (a.time < b.time ? 1 : -1))
+    .slice(0, limit);
+}
+
+// Long-running servers (local dev, or any host with sockets) also push each tick live over Socket.io.
 export function startSimulator(io) {
   console.log('[simulator] PrimeLink data simulator starting');
   console.log(`[simulator] ${COMMUNITIES.length} communities · 5 sectors (health, agriculture, environment, finance, climate)`);
-
-  const interval = setInterval(() => tick(io), 3000);
-
-  setTimeout(() => {
-    const overview = COMMUNITIES.map(c => ({
-      id:        c.id,
-      name:      c.name,
-      state:     c.state,
-      composite: compositeScore(state[c.id].scores),
-      scores:    state[c.id].scores,
-    }));
-    io.emit('map:overview', overview);
+  let last = currentTick();
+  const timer = setInterval(() => {
+    const tick = currentTick();
+    if (tick === last) return;
+    last = tick;
+    const overview = [];
+    for (const c of COMMUNITIES) {
+      const r = replay(c, tick);
+      const composite = compositeScore(r.scores);
+      io.emit('sensor:update', { communityId: c.id, communityName: c.name, scores: r.scores, composite, ts: tick * TICK_MS });
+      for (const a of r.alerts.filter((x) => x.time === new Date(tick * TICK_MS).toISOString())) io.emit('alert:new', a);
+      overview.push({ id: c.id, name: c.name, state: c.state, composite, scores: r.scores });
+    }
+    if (tick % 10 === 0) io.emit('map:overview', overview);
   }, 500);
-
-  return interval;
-}
-
-export function getCommunities() {
-  return COMMUNITIES.map(c => ({
-    ...c,
-    scores:    state[c.id].scores,
-    composite: compositeScore(state[c.id].scores),
-  }));
-}
-
-export function getCommunity(id) {
-  const c = COMMUNITIES.find(c => c.id === Number(id));
-  if (!c) return null;
-  return {
-    ...c,
-    scores:    state[c.id].scores,
-    composite: compositeScore(state[c.id].scores),
-    history:   state[c.id].history,
-  };
+  return timer;
 }
