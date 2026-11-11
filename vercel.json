@@ -11,6 +11,39 @@
   ],
   "headers": [
     {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/ https://primersgroup.ng https://id.primersgroup.ng 'sha256-PIV6Hkr93TXoPrO5SBLkCCFx2Iooi1Ti9ttN87RrKiA=' 'sha256-rBwBl21UrFj/u0fjvtEoXPDMhwmPoK+vM4OY+29aK+Y='; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/; img-src 'self' data: https://*.basemaps.cartocdn.com https://cdnjs.cloudflare.com https://primersgroup.ng; font-src 'self' data:; connect-src 'self'; frame-src https://primersgroup.ng https://id.primersgroup.ng; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        }
+      ]
+    },
+    {
       "source": "/index.html",
       "headers": [
         {

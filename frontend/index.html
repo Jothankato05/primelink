@@ -77,7 +77,7 @@
             <p>INTELLIGENCE</p>
             <input type="text" id="user" placeholder="Username">
             <input type="password" id="pass" placeholder="Password">
-            <button onclick="login()">Login</button>
+            <button id="loginBtn" type="button">Login</button>
             <p style="color:#666;font-size:0.75em;margin-top:15px">Demo: demo / primelink</p>
             <p style="color:#666;font-size:0.75em;margin-top:10px">from <a href="https://primersgroup.ng" target="_blank" rel="noopener" style="color:#9aa">Primers Group</a></p>
         </div>
@@ -93,7 +93,7 @@
             <div style="display:flex;align-items:center;gap:8px">
                 <!-- Primers bar (apps + your Primers ID), filled in by id.primersgroup.ng/bar.js -->
                 <span id="primers-bar-slot" style="display:flex;align-items:center"></span>
-                <button class="logout" onclick="logout()">Logout</button>
+                <button class="logout" id="logoutBtn" type="button">Logout</button>
             </div>
         </div>
 
@@ -208,6 +208,8 @@
             document.getElementById('login').style.display='flex';
         }
 
+        document.getElementById('loginBtn').addEventListener('click',login);
+        document.getElementById('logoutBtn').addEventListener('click',logout);
         document.getElementById('pass').addEventListener('keypress',e=>e.key==='Enter'&&login());
         window.addEventListener('load',()=>document.getElementById('user').focus());
     </script>

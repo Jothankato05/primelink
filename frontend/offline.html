@@ -318,7 +318,7 @@
 
         function renderButtons() {
             const html = COMMUNITIES.map((c, idx) =>
-                `<button class="community-btn ${idx === currentCommunity ? 'active' : ''}" onclick="selectCommunity(${idx})">${c.name.split(' ')[0]}</button>`
+                `<button class="community-btn ${idx === currentCommunity ? 'active' : ''}" data-idx="${idx}">${c.name.split(' ')[0]}</button>`
             ).join('');
             document.getElementById('communityButtons').innerHTML = html;
         }
@@ -413,6 +413,10 @@
         renderButtons();
         renderDashboard();
         setInterval(update, 2000);
+        document.getElementById('communityButtons').addEventListener('click', (e) => {
+            const b = e.target.closest('button[data-idx]');
+            if (b) selectCommunity(Number(b.dataset.idx));
+        });
     </script>
 </body>
 </html>
