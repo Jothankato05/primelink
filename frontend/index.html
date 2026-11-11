@@ -90,7 +90,11 @@
                 <span>INTELLIGENCE</span>
                 <span class="live">● LIVE</span>
             </div>
-            <button class="logout" onclick="logout()">Logout</button>
+            <div style="display:flex;align-items:center;gap:8px">
+                <!-- Primers bar (apps + your Primers ID), filled in by id.primersgroup.ng/bar.js -->
+                <span id="primers-bar-slot" style="display:flex;align-items:center"></span>
+                <button class="logout" onclick="logout()">Logout</button>
+            </div>
         </div>
 
         <div class="main">
@@ -207,6 +211,7 @@
         document.getElementById('pass').addEventListener('keypress',e=>e.key==='Enter'&&login());
         window.addEventListener('load',()=>document.getElementById('user').focus());
     </script>
+<script src="https://id.primersgroup.ng/bar-1.0.0.js" integrity="sha384-rXpiakx+MJPCCDxLtpxx4N2rh06qFYNYot4EZfZ04UwXe0N0/mzz1tRFfR1OKee9" crossorigin="anonymous" data-mount="#primers-bar-slot" data-signin="off" defer></script>
 <script src="https://primersgroup.ng/assistant/embed-1.1.0.js" integrity="sha384-j7EmwgGvgvWXR0MXFzh3oSnrChiDQSWrmfR8m2Fa30nobeCUhhAfTJ637yGcn8CP" crossorigin="anonymous" data-page="primelink" defer></script>
 </body>
 </html>
