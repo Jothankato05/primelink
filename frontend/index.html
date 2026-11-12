@@ -75,10 +75,10 @@
         <div class="login-box">
             <h1>PrimeLink</h1>
             <p>INTELLIGENCE</p>
-            <input type="text" id="user" placeholder="Username">
-            <input type="password" id="pass" placeholder="Password">
-            <button id="loginBtn" type="button">Login</button>
-            <p style="color:#666;font-size:0.75em;margin-top:15px">Demo: demo / primelink</p>
+            <button id="loginBtn" type="button">Continue with Primers ID</button>
+            <p id="loginMsg" role="status" style="color:#ff8a8a;font-size:0.8em;letter-spacing:0;margin:12px 0 0;min-height:1.2em"></p>
+            <p style="color:#888;font-size:0.8em;letter-spacing:0;margin:8px 0 0">New here? <a href="#" id="signupLink" style="color:#00d4ff">Create a Primers ID</a></p>
+            <p style="color:#777;font-size:0.72em;letter-spacing:0;line-height:1.5;margin:14px 0 0">Primers ID shares your name and verified email with PrimeLink. PrimeLink keeps them in this browser tab only, until you log out or close it. <a href="https://primersgroup.ng/privacy/#primers-id" target="_blank" rel="noopener" style="color:#9aa">Privacy</a></p>
             <p style="color:#666;font-size:0.75em;margin-top:10px">from <a href="https://primersgroup.ng" target="_blank" rel="noopener" style="color:#9aa">Primers Group</a></p>
         </div>
     </div>
@@ -93,6 +93,7 @@
             <div style="display:flex;align-items:center;gap:8px">
                 <!-- Primers bar (apps + your Primers ID), filled in by id.primersgroup.ng/bar.js -->
                 <span id="primers-bar-slot" style="display:flex;align-items:center"></span>
+                <span id="who" style="color:#9aa;font-size:0.8em;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
                 <button class="logout" id="logoutBtn" type="button">Logout</button>
             </div>
         </div>
@@ -128,92 +129,8 @@
         </div>
     </div>
 
-    <script>
-        const COMM = [
-            {name:'Kano North',pop:285,lat:12.0,lng:8.5,c:65,a:60,f:55,h:70,i:65},
-            {name:'Ibadan Central',pop:320,lat:7.4,lng:3.9,c:72,a:70,f:75,h:78,i:75},
-            {name:'Maiduguri',pop:215,lat:11.8,lng:13.2,c:45,a:40,f:50,h:48,i:52},
-            {name:'Jos North',pop:180,lat:9.9,lng:8.9,c:68,a:65,f:62,h:68,i:70},
-            {name:'Enugu East',pop:220,lat:6.5,lng:7.5,c:72,a:70,f:68,h:72,i:70},
-            {name:'Sokoto Central',pop:195,lat:13.0,lng:5.2,c:58,a:55,f:60,h:62,i:58},
-            {name:'Port Harcourt',pop:280,lat:4.8,lng:7.0,c:70,a:68,f:70,h:72,i:72},
-            {name:'Abuja Municipal',pop:410,lat:9.1,lng:7.5,c:75,a:78,f:82,h:82,i:80}
-        ];
-
-        let data={}, sel=0, map=null, mkrs={};
-
-        function score(d) { return Math.round((d.c+d.a+d.f+d.h+d.i)/5); }
-        function color(s) { return s>=65?'#00ff64':s>=40?'#ffb347':'#ff4444'; }
-
-        function initMap() {
-            map = L.map('map',{attributionControl:false}).setView([9.1,7.5],5);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png').addTo(map);
-            COMM.forEach((c,i)=>{
-                let m=L.circleMarker([c.lat,c.lng],{radius:13,fillColor:color(score(data[i])),color:color(score(data[i])),weight:2,opacity:0.8,fillOpacity:0.7}).addTo(map);
-                m.on('click',()=>{sel=i;draw();});
-                mkrs[i]=m;
-            });
-        }
-
-        function draw() {
-            let c=COMM[sel], d=data[sel], s=score(d);
-            document.getElementById('cname').textContent=c.name;
-            document.getElementById('cpop').textContent=c.pop+'K residents';
-            document.getElementById('risk').textContent=s;
-            document.getElementById('stat').textContent=s>=65?'STABLE':s>=50?'CAUTION':'CRITICAL';
-
-            let secs=[
-                {e:'🏥',n:'HEALTH',v:Math.round(d.h)},
-                {e:'🌾',n:'AGRICULTURE',v:Math.round(d.a)},
-                {e:'🌍',n:'ENVIRONMENT',v:Math.round(d.c)},
-                {e:'💰',n:'FINANCE',v:Math.round(d.f)},
-                {e:'🌧️',n:'CLIMATE',v:Math.round(d.c)}
-            ];
-            document.getElementById('secs').innerHTML=secs.map(s=>`<div class="sector"><div class="sec-row"><span class="sec-name">${s.e} ${s.n}</span><span class="sec-val">${s.v}</span></div><div class="sec-bar"><div class="sec-fill" style="width:${s.v}%"></div></div></div>`).join('');
-
-            let alts=['Soil moisture declining — 46% to 38%','Parametric insurance — ₦1.2M disbursed','Clinic at 68% capacity'];
-            document.getElementById('alts').innerHTML=alts.map((a,i)=>`<div class="alert ${i==1?'good':'critical'}">${a}<div class="alert-time">${i+1}h ago</div></div>`).join('');
-
-            document.getElementById('stats').innerHTML=COMM.map((c,i)=>`<div class="stat"><div class="stat-val">${score(data[i])}</div><div class="stat-name">${c.name.split(' ')[0]}</div></div>`).join('');
-
-            Object.entries(mkrs).forEach(([i,m])=>{let s=score(data[i]);m.setStyle({fillColor:color(s),color:color(s)});});
-        }
-
-        function update() {
-            COMM.forEach((c,i)=>{
-                let d=data[i];
-                d.c+=(Math.random()-0.5)*3;
-                d.a+=(d.c-c.c)*0.6+(Math.random()-0.5)*2;
-                d.f+=(d.a-c.a)*0.5+(Math.random()-0.5)*1.5;
-                d.h+=(d.f-c.f)*0.4+(Math.random()-0.5)*1.5;
-                d.i+=(Math.random()-0.5)*0.5;
-                ['c','a','f','h','i'].forEach(k=>{d[k]=Math.max(20,Math.min(95,d[k]));});
-            });
-            draw();
-        }
-
-        function login() {
-            if(document.getElementById('user').value==='demo'&&document.getElementById('pass').value==='primelink') {
-                document.getElementById('login').style.display='none';
-                document.getElementById('app').classList.add('show');
-                COMM.forEach((c,i)=>{data[i]={...c};});
-                setTimeout(initMap,100);
-                draw();
-                setInterval(update,2000);
-            }else alert('Invalid: demo/primelink');
-        }
-
-        function logout() {
-            document.getElementById('app').classList.remove('show');
-            document.getElementById('login').style.display='flex';
-        }
-
-        document.getElementById('loginBtn').addEventListener('click',login);
-        document.getElementById('logoutBtn').addEventListener('click',logout);
-        document.getElementById('pass').addEventListener('keypress',e=>e.key==='Enter'&&login());
-        window.addEventListener('load',()=>document.getElementById('user').focus());
-    </script>
-<script src="https://id.primersgroup.ng/bar-1.0.0.js" integrity="sha384-rXpiakx+MJPCCDxLtpxx4N2rh06qFYNYot4EZfZ04UwXe0N0/mzz1tRFfR1OKee9" crossorigin="anonymous" data-mount="#primers-bar-slot" data-signin="off" defer></script>
+    <script src="/app.js" defer></script>
+<script src="https://id.primersgroup.ng/bar-1.1.0.js" integrity="sha384-Z8R46SJ3y4GV3HBVXX1QlsUZ0IOdsV51iJDVUAn5hbqlCJyzsu9Dc3op6C9FNBAV" crossorigin="anonymous" data-mount="#primers-bar-slot" data-signin="off" defer></script>
 <script src="https://primersgroup.ng/assistant/embed-1.1.0.js" integrity="sha384-j7EmwgGvgvWXR0MXFzh3oSnrChiDQSWrmfR8m2Fa30nobeCUhhAfTJ637yGcn8CP" crossorigin="anonymous" data-page="primelink" defer></script>
 </body>
 </html>
